@@ -22,6 +22,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -61,7 +62,32 @@
             gap: 12px;
         }
 
-        /* Круглые элементы для переключателя языков и входа */
+        /* Переключатель языков kz / ru / en */
+        .lang-switcher {
+            display: flex;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+        }
+
         .circle-btn {
             width: 42px;
             height: 42px;
@@ -71,8 +97,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.9rem;
             color: var(--text-main);
             cursor: pointer;
             transition: all 0.2s;
@@ -251,32 +276,57 @@
             display: none;
         }
 
+        /* Футер и секции с информацией */
         footer {
             background: var(--card-bg);
             border-top: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 3rem 2rem 1.5rem 2rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
-        footer nav {
-            display: flex;
-            gap: 1.5rem;
+        .footer-section h3 {
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
         }
 
-        footer nav a {
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
             color: var(--text-muted);
             text-decoration: none;
             transition: color 0.2s;
         }
 
-        footer nav a:hover {
+        .footer-section a:hover {
             color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
     </style>
 </head>
@@ -285,9 +335,12 @@
     <header>
         <a href="#" class="logo">🎓 UniView AI</a>
         <div class="header-controls">
-            <!-- Переключатель языка в виде кругляшка -->
-            <div class="circle-btn" onclick="toggleLang()" title="Сменить язык">RU</div>
-            <!-- Вход в виде кругляшка -->
+            <!-- Переключатель языков kz / ru / en -->
+            <div class="lang-switcher">
+                <button class="lang-btn" onclick="setLang('kz')">kz</button>
+                <button class="lang-btn active" onclick="setLang('ru')">ru</button>
+                <button class="lang-btn" onclick="setLang('en')">en</button>
+            </div>
             <a href="#" class="circle-btn" onclick="openAuthModal()" title="Войти">👤</a>
         </div>
     </header>
@@ -299,7 +352,7 @@
         </div>
 
         <div class="search-box">
-            <input type="text" id="uniInput" placeholder="Введите название университета (например, КазНУ, Harvard University...)">
+            <input type="text" id="uniInput" placeholder="Введите название университета...">
             <button class="btn" onclick="searchUniversity()">Проверить</button>
         </div>
 
@@ -307,21 +360,17 @@
             ⏳ Проверяем базу данных и верифицируем объект...
         </div>
 
-        <!-- Ошибка, если ничего не найдено или объект не является университетом -->
         <div id="warningBox" class="warning-box">
             Недостаточно подтверждённых данных. Попробуйте снова либо убедитесь в правильности вашего текста.
         </div>
 
-        <!-- Основной контейнер результатов (скрывается при ошибке) -->
         <div id="resultContainer" class="result-container">
             <h2 id="uniName" style="margin-bottom: 1.5rem;">Название университета</h2>
 
             <div class="info-grid">
                 <div class="card-block">
                     <div class="section-title">🌐 Официальные источники</div>
-                    <div class="sources-flex" id="uniSources">
-                        <!-- Сюда динамически добавляются кнопки источников -->
-                    </div>
+                    <div class="sources-flex" id="uniSources"></div>
                 </div>
             </div>
 
@@ -332,43 +381,56 @@
             <p id="uniRecommendation" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
 
             <div class="section-title">🖼️ Верифицированные фотографии кампуса и инфраструктуры</div>
-            <div class="photos-grid" id="uniPhotos">
-                <!-- Сюда подгружаются уникальные фотографии без дубликатов -->
-            </div>
+            <div class="photos-grid" id="uniPhotos"></div>
         </div>
     </div>
 
     <footer>
-        <div>© 2026 UniView AI. Все права защищены.</div>
-        <nav>
-            <a href="#history">История поиска</a>
-            <a href="#faq">FAQ</a>
-            <a href="#contacts">Контакты</a>
-            <a href="#terms">Условия пользования</a>
-            <a href="#privacy">Политика конфиденциальности</a>
-        </nav>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>О нас</h3>
+                <p>UniView AI — интеллектуальный сервис для поиска, анализа и верификации учебных заведений по открытым мировым источникам.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Основатели проекта</h3>
+                <ul>
+                    <li>Болатхан Мансур</li>
+                    <li>Сабитулы Алихан</li>
+                </ul>
+            </div>
+            <div class="footer-section" id="contacts">
+                <h3>Контакты</h3>
+                <ul>
+                    <li>Email: <a href="mailto:steppetech@gmail.com">steppetech@gmail.com</a></li>
+                    <li>Телеграмм: <a href="https://t.me/username" target="_blank">@username</a></li>
+                    <li>Ватцап: <a href="https://wa.me/77000000000" target="_blank">wa.me/77000000000</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 UniView AI
+        </div>
     </footer>
 
     <script>
-        let currentLang = 'RU';
-        function toggleLang() {
-            const langs = ['RU', 'KZ', 'EN'];
-            let nextIndex = (langs.indexOf(currentLang) + 1) % langs.length;
-            currentLang = langs[nextIndex];
-            event.target.innerText = currentLang;
+        function setLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
         async function searchUniversity() {
-            const query = document.getElementById('uniInput').value.trim();
-            if (!query) return;
+            const rawQuery = document.getElementById('uniInput').value.trim();
+            if (!rawQuery) return;
+
+            // Строгий шаблон запроса: «университет (тут то что написал чел)»
+            const searchQuery = `университет ${rawQuery}`;
 
             document.getElementById('loader').style.display = 'block';
             document.getElementById('resultContainer').style.display = 'none';
             document.getElementById('warningBox').style.display = 'none';
 
             try {
-                // 1. Поиск через Википедию/Wikidata для проверки, что это университет
-                const searchUrl = `https://ru.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query + " университет institute university высшее учебное заведение")}&format=json&origin=*`;
+                const searchUrl = `https://ru.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&format=json&origin=*`;
                 const response = await fetch(searchUrl);
                 const data = await response.json();
 
@@ -381,27 +443,24 @@
                 const pageId = data.query.search[0].pageid;
                 const snippet = data.query.search[0].snippet.toLowerCase();
 
-                // Строгая проверка на тему "университет / институт / академия / высшее образование"
-                const isUniRelated = query.toLowerCase().split(' ').some(word => pageTitle.toLowerCase().includes(word)) ||
-                                     snippet.includes('университет') || snippet.includes('институт') || 
+                const isUniRelated = snippet.includes('университет') || snippet.includes('институт') || 
                                      snippet.includes('academy') || snippet.includes('university') || 
-                                     snippet.includes('college') || snippet.includes('образовательн');
+                                     snippet.includes('college') || pageTitle.toLowerCase().includes('университет') ||
+                                     pageTitle.toLowerCase().includes('институт');
 
                 if (!isUniRelated) {
                     showOnlyWarning();
                     return;
                 }
 
-                // 2. Получаем детали статьи, ссылки и изображения
-                const detailUrl = `https://ru.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages|images|info&exintro&explaintext&inprop=url&pithumbsize=600&pageids=${pageId}&format=json&origin=*`;
+                const detailUrl = `https://ru.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages|info&exintro&explaintext&inprop=url&pithumbsize=600&pageids=${pageId}&format=json&origin=*`;
                 const detailRes = await fetch(detailUrl);
                 const detailData = await detailRes.json();
                 const pageInfo = detailData.query.pages[pageId];
 
-                // Делаем краткую информацию еще короче (берем только первое предложение или усекаем)
                 let fullExtract = pageInfo.extract || "";
                 let sentences = fullExtract.match(/[^.!?]+[.!?]+/g) || [fullExtract];
-                let shortSummary = sentences.slice(0, 2).join(' '); // Ограничиваем 1-2 предложениями
+                let shortSummary = sentences.slice(0, 2).join(' ');
 
                 if (!shortSummary || shortSummary.length < 20) {
                     showOnlyWarning();
@@ -412,7 +471,6 @@
                 document.getElementById('uniSummary').innerText = shortSummary;
                 document.getElementById('uniRecommendation').innerText = `На основе верифицированных данных, ${pageInfo.title} является действующим учреждением высшего образования. Перед подачей документов рекомендуется сверить информацию на официальном ресурсе.`;
 
-                // Источники в виде кнопок («Перейти к источнику 1», «Перейти к источнику 2»...)
                 const sourcesContainer = document.getElementById('uniSources');
                 sourcesContainer.innerHTML = '';
                 
@@ -421,30 +479,17 @@
                     sourcesContainer.innerHTML += `<a href="${pageInfo.fullurl}" target="_blank" class="source-btn">🔗 Перейти к источнику ${sourceCount++}</a>`;
                 }
                 sourcesContainer.innerHTML += `<a href="https://www.wikidata.org/wiki/Special:Search?search=${encodeURIComponent(pageInfo.title)}" target="_blank" class="source-btn">🔗 Перейти к источнику ${sourceCount++}</a>`;
-                sourcesContainer.innerHTML += `<a href="https://russiaedu.ru" target="_blank" class="source-btn">🔗 Перейти к источнику ${sourceCount++}</a>`;
 
-                // Фотографии без дубликатов
                 const photosContainer = document.getElementById('uniPhotos');
                 photosContainer.innerHTML = '';
                 
-                let uniqueImages = new Set();
                 if (pageInfo.thumbnail) {
-                    uniqueImages.add(pageInfo.thumbnail.source);
-                }
-
-                // Дополнительный поиск картинок по открытым базам, исключая повторы
-                const imgSearchUrl = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(pageInfo.title + " campus building university")}¶ms=url&format=json&origin=*`;
-                
-                // Рендерим уникальные фото
-                if (uniqueImages.size > 0) {
-                    uniqueImages.forEach(imgSrc => {
-                        photosContainer.innerHTML += `
-                            <div class="photo-card">
-                                <img src="${imgSrc}" alt="Фото кампуса">
-                                <div class="photo-meta">Источник: Открытый архив<br>✓ Проверено ИИ</div>
-                            </div>
-                        `;
-                    });
+                    photosContainer.innerHTML = `
+                        <div class="photo-card">
+                            <img src="${pageInfo.thumbnail.source}" alt="Фото кампуса">
+                            <div class="photo-meta">Источник: Открытый архив<br>✓ Проверено ИИ</div>
+                        </div>
+                    `;
                 } else {
                     photosContainer.innerHTML = `<p style="color: var(--text-muted)">Уникальных подтвержденных фотографий не обнаружено.</p>`;
                 }
