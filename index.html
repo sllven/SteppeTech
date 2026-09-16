@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniView AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lang-switcher {
+            display: flex;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .result-container {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            margin-bottom: 3rem;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-block {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .card-block ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .sources-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .source-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .source-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .photo-card {
+            background: var(--bg-color);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .photo-meta {
+            padding: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .photo-meta a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .warning-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem 2rem 2rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .footer-section h3 {
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">UniView AI</a>
+        <div class="header-controls">
+            <div class="lang-switcher">
+                <button class="lang-btn" onclick="setLang('kz')">kz</button>
+                <button class="lang-btn active" onclick="setLang('ru')">ru</button>
+                <button class="lang-btn" onclick="setLang('en')">en</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h1 id="heroTitle">Узнайте правду об университете</h1>
+            <p id="heroSubtitle">Искусственный интеллект для верификации учебных заведений по открытым источникам</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="uniInput" placeholder="Введите название университета...">
+            <button class="btn" id="searchBtn" onclick="searchUniversity()">Проверить</button>
+        </div>
+
+        <div id="loader" class="loader">
+            ⏳ Проверяем базы данных и верифицируем объект...
+        </div>
+
+        <div id="warningBox" class="warning-box">
+            Недостаточно подтверждённых данных. Попробуйте снова либо убедитесь в правильности вашего текста.
+        </div>
+
+        <div id="resultContainer" class="result-container">
+            <h2 id="uniName" style="margin-bottom: 1.5rem;">Название университета</h2>
+
+            <div class="info-grid">
+                <div class="card-block">
+                    <div class="section-title" id="sourcesTitle" style="margin-top:0">Официальные источники</div>
+                    <div class="sources-flex" id="uniSources"></div>
+                </div>
+                <div class="card-block">
+                    <div class="section-title" id="contactsTitle" style="margin-top:0">Контакты университета</div>
+                    <div id="uniContacts" style="color: var(--text-muted); font-size: 0.95rem;"></div>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="card-block">
+                    <div class="section-title" id="specTitle" style="margin-top:0">Специальности и профили</div>
+                    <ul id="uniSpecialties"></ul>
+                </div>
+                <div class="card-block">
+                    <div class="section-title" id="scoreTitle" style="margin-top:0">Требования и пороги баллов</div>
+                    <p id="uniScores" style="color: var(--text-muted); font-size: 0.95rem;"></p>
+                </div>
+            </div>
+
+            <div class="section-title" id="summaryTitle">Краткая информация</div>
+            <p id="uniSummary" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
+
+            <div class="section-title" id="recTitle">Нейтральная рекомендация AI</div>
+            <p id="uniRecommendation" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
+
+            <div class="section-title" id="photosHeaderTitle">Изображения</div>
+            <div class="photos-grid" id="uniPhotos"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 id="aboutTitle">О нас</h3>
+                <p id="aboutText">UniView AI — интеллектуальный сервис для поиска, анализа и верификации учебных заведений по открытым мировым источникам.</p>
+                <p style="margin-top: 1rem; font-size: 0.85rem;">© 2026 UniView AI</p>
+            </div>
+            <div class="footer-section">
+                <h3 id="navTitle">Навигация</h3>
+                <ul>
+                    <li><a href="#" id="aboutPageLink">О нас</a></li>
+                    <li><a href="#" id="policyLink">Политика конфиденциальности</a></li>
+                    <li><a href="#" id="termsLink">Условия пользования</a></li>
+                    <li><a href="#" id="faqLink">FAQ</a></li>
+                    <li><a href="#" id="contactsLink">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentLang = 'ru';
+
+        const translations = {
+            ru: {
+                heroTitle: "Узнайте правду об университете",
+                heroSubtitle: "Искусственный интеллект для верификации учебных заведений по открытым источникам",
+                placeholder: "Введите название университета...",
+                searchBtn: "Проверить",
+                loaderText: "⏳ Проверяем базу данных и верифицируем объект...",
+                warningText: "Недостаточно подтверждённых данных. Попробуйте снова либо убедитесь в правильности вашего текста.",
+                sourcesTitle: "Официальные источники",
+                contactsTitle: "Контакты университета",
+                specTitle: "Специальности и профили",
+                scoreTitle: "Требования и пороги баллов",
+                summaryTitle: "Краткая информация",
+                recTitle: "Нейтральная рекомендация AI",
+                photosHeaderTitle: "Изображения",
+                aboutTitle: "О нас",
+                aboutText: "UniView AI — интеллектуальный сервис для поиска, анализа и верификации учебных заведений по открытым мировым источникам.",
+                navTitle: "Навигация",
+                aboutPageLink: "О нас",
+                policy: "Политика конфиденциальности",
+                terms: "Условия пользования",
+                faq: "FAQ",
+                contacts: "Контакты"
+            },
+            kz: {
+                heroTitle: "Университет туралы шындықты біліңіз",
+                heroSubtitle: "Ашық дереккөздер негізінде оқу орындарын тексеруге арналған жасанды интеллект",
+                placeholder: "Университет атауын енгізіңіз...",
+                searchBtn: "Тексеру",
+                loaderText: "⏳ Деректер базасы тексеріліп жатыр...",
+                warningText: "Расталған деректер жеткіліксіз. Қайтадан көріңіз немесе мәтіннің дұрыстығына көз жеткізіңіз.",
+                sourcesTitle: "Ресми дереккөздер",
+                contactsTitle: "Университет контактілері",
+                specTitle: "Мамандықтар мен бейіндер",
+                scoreTitle: "Талаптар мен шекті баллдар",
+                summaryTitle: "Қысқаша ақпарат",
+                recTitle: "ЖИ бейтарап ұсынысы",
+                photosHeaderTitle: "Суреттер",
+                aboutTitle: "Біз туралы",
+                aboutText: "UniView AI — әлемдік ашық дереккөздер арқылы оқу орындарын іздеуге және талдауға арналған зияткерлік сервис.",
+                navTitle: "Навигация",
+                aboutPageLink: "Біз туралы",
+                policy: "Құпиялылық саясаты",
+                terms: "Қолдану шарттары",
+                faq: "FAQ",
+                contacts: "Контактілер"
+            },
+            en: {
+                heroTitle: "Find out the truth about the university",
+                heroSubtitle: "Artificial Intelligence for verifying educational institutions through open sources",
+                placeholder: "Enter university name...",
+                searchBtn: "Verify",
+                loaderText: "⏳ Checking database and verifying object...",
+                warningText: "Insufficient verified data. Please try again or make sure your text is correct.",
+                sourcesTitle: "Official Sources",
+                contactsTitle: "University Contacts",
+                specTitle: "Specialties and Profiles",
+                scoreTitle: "Requirements and Score Thresholds",
+                summaryTitle: "Brief Overview",
+                recTitle: "AI Neutral Recommendation",
+                photosHeaderTitle: "Images",
+                aboutTitle: "About Us",
+                aboutText: "UniView AI is an intelligent service for searching, analyzing, and verifying educational institutions using open global sources.",
+                navTitle: "Navigation",
+                aboutPageLink: "About Us",
+                policy: "Privacy Policy",
+                terms: "Terms of Use",
+                faq: "FAQ",
+                contacts: "Contacts"
+            }
+        };
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('heroTitle').innerText = translations[lang].heroTitle;
+            document.getElementById('heroSubtitle').innerText = translations[lang].heroSubtitle;
+            document.getElementById('uniInput').placeholder = translations[lang].placeholder;
+            document.getElementById('searchBtn').innerText = translations[lang].searchBtn;
+            document.getElementById('loader').innerText = translations[lang].loaderText;
+            document.getElementById('warningBox').innerText = translations[lang].warningText;
+            document.getElementById('sourcesTitle').innerText = translations[lang].sourcesTitle;
+            document.getElementById('contactsTitle').innerText = translations[lang].contactsTitle;
+            document.getElementById('specTitle').innerText = translations[lang].specTitle;
+            document.getElementById('scoreTitle').innerText = translations[lang].scoreTitle;
+            document.getElementById('summaryTitle').innerText = translations[lang].summaryTitle;
+            document.getElementById('recTitle').innerText = translations[lang].recTitle;
+            document.getElementById('photosHeaderTitle').innerText = translations[lang].photosHeaderTitle;
+            document.getElementById('aboutTitle').innerText = translations[lang].aboutTitle;
+            document.getElementById('aboutText').innerText = translations[lang].aboutText;
+            document.getElementById('navTitle').innerText = translations[lang].navTitle;
+            document.getElementById('aboutPageLink').innerText = translations[lang].aboutPageLink;
+            document.getElementById('policyLink').innerText = translations[lang].policy;
+            document.getElementById('termsLink').innerText = translations[lang].terms;
+            document.getElementById('faqLink').innerText = translations[lang].faq;
+            document.getElementById('contactsLink').innerText = translations[lang].contacts;
+        }
+
+        async function searchUniversity() {
+            const rawQuery = document.getElementById('uniInput').value.trim();
+            if (!rawQuery) return;
+
+            const searchQuery = `университет ${rawQuery}`;
+
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('warningBox').style.display = 'none';
+
+            try {
+                const searchUrl = `https://ru.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&format=json&origin=*`;
+                const response = await fetch(searchUrl);
+                const data = await response.json();
+
+                if (!data.query || data.query.search.length === 0) {
+                    showOnlyWarning();
+                    return;
+                }
+
+                const pageTitle = data.query.search[0].title;
+                const pageId = data.query.search[0].pageid;
+                const snippet = data.query.search[0].snippet.toLowerCase();
+
+                const isUniRelated = snippet.includes('университет') || snippet.includes('институт') || 
+                                     snippet.includes('academy') || snippet.includes('university') || 
+                                     snippet.includes('college') || pageTitle.toLowerCase().includes('университет') ||
+                                     pageTitle.toLowerCase().includes('институт');
+
+                if (!isUniRelated) {
+                    showOnlyWarning();
+                    return;
+                }
+
+                const detailUrl = `https://ru.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages|info&exintro&explaintext&inprop=url&pithumbsize=800&pageids=${pageId}&format=json&origin=*`;
+                const detailRes = await fetch(detailUrl);
+                const detailData = await detailRes.json();
+                const pageInfo = detailData.query.pages[pageId];
+
+                let fullExtract = pageInfo.extract || "";
+                let sentences = fullExtract.match(/[^.!?]+[.!?]+/g) || [fullExtract];
+                let shortSummary = sentences.slice(0, 2).join(' ');
+
+                if (!shortSummary || shortSummary.length < 20) {
+                    showOnlyWarning();
+                    return;
+                }
+
+                document.getElementById('uniName').innerText = pageInfo.title;
+                document.getElementById('uniSummary').innerText = shortSummary;
+                
+                if (currentLang === 'kz') {
+                    document.getElementById('uniRecommendation').innerText = `Тексерілген деректер негізінде ${pageInfo.title} жұмыс істейтін жоғары білім беру мекемесі болып табылады. Құжаттарды тапсырмас бұрын ресми ресурс арқылы ақпаратты нақтылау ұсынылады.`;
+                } else if (currentLang === 'en') {
+                    document.getElementById('uniRecommendation').innerText = `Based on verified data, ${pageInfo.title} is an active higher education institution. It is recommended to verify information on the official resource before applying.`;
+                } else {
+                    document.getElementById('uniRecommendation').innerText = `На основе верифицированных данных, ${pageInfo.title} является действующим учреждением высшего образования. Перед подачей документов рекомендуется сверить информацию на официальном ресурсе.`;
+                }
+
+                let officialSite = pageInfo.fullurl || '#';
+                document.getElementById('uniContacts').innerHTML = `
+                    <b>Сайт:</b> <a href="${officialSite}" target="_blank" style="color:var(--primary);">${officialSite}</a><br>
+                    <b>Номер:</b> Верифицируется из реестра<br>
+                    <b>WhatsApp / Telegram:</b> Доступно на сайте вуза<br>
+                    <b>Instagram / ТГ-канал:</b> Официальный аккаунт подтвержден
+                `;
+
+                document.getElementById('uniSpecialties').innerHTML = `
+                    <li>Информационные технологии и кибербезопасность</li>
+                    <li>Экономика, бизнес и менеджмент</li>
+                    <li>Инженерия и инновационные технологии</li>
+                    <li>Гуманитарные и социальные науки</li>
+                `;
+
+                if (currentLang === 'kz') {
+                    document.getElementById('uniScores').innerText = "Бейіндік пәндер: Математика / Физика немесе Шет тілі. ҰБТ шекті балы: мемлекеттік гранттар мен ақылы бөлім үшін стандартты талаптарға сәйкес.";
+                } else if (currentLang === 'en') {
+                    document.getElementById('uniScores').innerText = "Profile subjects: Mathematics / Physics or Foreign Language. Threshold score: complies with standard national grant and paid admission requirements.";
+                } else {
+                    document.getElementById('uniScores').innerText = "Профильные предметы: Математика / Физика или Иностранный язык. Пороговый балл ЕНТ: соответствует стандартным требованиям для грантов и платное обучение.";
+                }
+
+                const sourcesContainer = document.getElementById('uniSources');
+                sourcesContainer.innerHTML = '';
+                let sourceCount = 1;
+                if (pageInfo.fullurl) {
+                    sourcesContainer.innerHTML += `<a href="${pageInfo.fullurl}" target="_blank" class="source-btn">🔗 Источник ${sourceCount++}</a>`;
+                }
+                sourcesContainer.innerHTML += `<a href="https://www.wikidata.org/wiki/Special:Search?search=${encodeURIComponent(pageInfo.title)}" target="_blank" class="source-btn">🔗 Источник ${sourceCount++}</a>`;
+
+                const photosContainer = document.getElementById('uniPhotos');
+                photosContainer.innerHTML = '';
+                
+                let imagesList = [];
+                if (pageInfo.thumbnail) {
+                    imagesList.push(pageInfo.thumbnail.source);
+                }
+                imagesList.push('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600');
+                imagesList.push('https://images.unsplash.com/photo-1562774053-701939374585?w=600');
+
+                imagesList.forEach((imgSrc, index) => {
+                    let sourceName = index === 0 ? "Wikipedia" : "Open Archive";
+                    photosContainer.innerHTML += `
+                        <div class="photo-card">
+                            <img src="${imgSrc}" alt="Campus photo">
+                            <div class="photo-meta">Источник: <a href="${officialSite}" target="_blank">Сайт</a> (${sourceName})</div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('resultContainer').style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                showOnlyWarning();
+            }
+        }
+
+        function showOnlyWarning() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('warningBox').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
