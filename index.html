@@ -56,50 +56,64 @@
             gap: 8px;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .about-link-header {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .about-link-header:hover {
+            color: var(--primary);
+        }
+
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
-        .lang-wrapper {
+        /* Сначала языки, потом отдельно три точки */
+        .lang-switcher {
             display: flex;
-            align-items: center;
-            gap: 6px;
             background: var(--bg-color);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 2px 8px;
-        }
-
-        .lang-dots {
-            color: var(--text-muted);
-            font-weight: bold;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            user-select: none;
-        }
-
-        .lang-switcher {
-            display: flex;
+            padding: 2px;
             overflow: hidden;
         }
 
         .lang-btn {
             background: transparent;
             border: none;
-            padding: 4px 8px;
+            padding: 4px 10px;
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-muted);
             cursor: pointer;
             transition: all 0.2s;
+            border-radius: 16px;
         }
 
         .lang-btn.active {
             background: var(--primary);
             color: white;
-            border-radius: 12px;
+        }
+
+        .lang-dots {
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            user-select: none;
+            padding: 0 4px;
         }
 
         .container {
@@ -278,7 +292,6 @@
             display: none;
         }
 
-        /* Фиксированный футер снизу */
         footer {
             background: var(--card-bg);
             border-top: 1px solid var(--border);
@@ -334,16 +347,18 @@
 <body>
 
     <header>
-        <a href="#" class="logo">UniView AI</a>
+        <div class="header-left">
+            <a href="#" class="logo">UniView AI</a>
+            <a href="#" id="aboutHeaderLink" class="about-link-header">О нас</a>
+        </div>
         <div class="header-controls">
-            <div class="lang-wrapper">
-                <span class="lang-dots">•••</span>
-                <div class="lang-switcher">
-                    <button class="lang-btn" onclick="setLang('kz')">kz</button>
-                    <button class="lang-btn active" onclick="setLang('ru')">ru</button>
-                    <button class="lang-btn" onclick="setLang('en')">en</button>
-                </div>
+            <!-- Сначала языки, потом отдельно три точки -->
+            <div class="lang-switcher">
+                <button class="lang-btn" onclick="setLang('kz')">kz</button>
+                <button class="lang-btn active" onclick="setLang('ru')">ru</button>
+                <button class="lang-btn" onclick="setLang('en')">en</button>
             </div>
+            <span class="lang-dots">•••</span>
         </div>
     </header>
 
@@ -402,7 +417,6 @@
         </div>
     </div>
 
-    <!-- Футер по вашему точному требованию -->
     <footer>
         <div class="footer-content">
             <div class="footer-section" style="grid-column: span 2;">
@@ -412,7 +426,7 @@
             <div class="footer-section">
                 <h3 id="navTitle">Навигация</h3>
                 <ul>
-                    <li><a href="#" id="aboutLink">О нас</a></li>
+                    <li><a href="#" id="aboutLink">Подробнее о нас</a></li>
                     <li><a href="#" id="policyLink">Политика конфиденциальности</a></li>
                     <li><a href="#" id="termsLink">Условия пользования</a></li>
                 </ul>
@@ -435,6 +449,7 @@
 
         const translations = {
             ru: {
+                aboutHeader: "О нас",
                 heroTitle: "Узнайте правду об университете",
                 heroSubtitle: "Искусственный интеллект для верификации учебных заведений по открытым источникам",
                 placeholder: "Введите название университета...",
@@ -450,7 +465,7 @@
                 photosHeaderTitle: "Изображения",
                 footerDesc: "UniView AI — интеллектуальный сервис для поиска, анализа и верификации учебных заведений по открытым мировым источникам.",
                 navTitle: "Навигация",
-                aboutLink: "О нас",
+                aboutLink: "Подробнее о нас",
                 policyLink: "Политика конфиденциальности",
                 termsLink: "Условия пользования",
                 supportTitle: "Поддержка",
@@ -458,6 +473,7 @@
                 contactsLink: "Контакты"
             },
             kz: {
+                aboutHeader: "Біз туралы",
                 heroTitle: "Университет туралы шындықты біліңіз",
                 heroSubtitle: "Ашық дереккөздер негізінде оқу орындарын тексеруге арналған жасанды интеллект",
                 placeholder: "Университет атауын енгізіңіз...",
@@ -473,7 +489,7 @@
                 photosHeaderTitle: "Суреттер",
                 footerDesc: "UniView AI — әлемдік ашық дереккөздер арқылы оқу орындарын іздеуге және талдауға арналған зияткерлік сервис.",
                 navTitle: "Навигация",
-                aboutLink: "Біз туралы",
+                aboutLink: "Біз туралы толығырақ",
                 policyLink: "Құпиялылық саясаты",
                 termsLink: "Қолдану шарттары",
                 supportTitle: "Қолдау",
@@ -481,6 +497,7 @@
                 contactsLink: "Контактілер"
             },
             en: {
+                aboutHeader: "About Us",
                 heroTitle: "Find out the truth about the university",
                 heroSubtitle: "Artificial Intelligence for verifying educational institutions through open sources",
                 placeholder: "Enter university name...",
@@ -496,7 +513,7 @@
                 photosHeaderTitle: "Images",
                 footerDesc: "UniView AI is an intelligent service for searching, analyzing, and verifying educational institutions using open global sources.",
                 navTitle: "Navigation",
-                aboutLink: "About Us",
+                aboutLink: "More about us",
                 policyLink: "Privacy Policy",
                 termsLink: "Terms of Use",
                 supportTitle: "Support",
@@ -510,6 +527,7 @@
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
+            document.getElementById('aboutHeaderLink').innerText = translations[lang].aboutHeader;
             document.getElementById('heroTitle').innerText = translations[lang].heroTitle;
             document.getElementById('heroSubtitle').innerText = translations[lang].heroSubtitle;
             document.getElementById('uniInput').placeholder = translations[lang].placeholder;
@@ -542,7 +560,6 @@
             document.getElementById('warningBox').style.display = 'none';
 
             try {
-                // Параллельный запрос к Wikipedia API и Hipo Universities API
                 const wikiUrl = `https://ru.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(rawQuery)}&format=json&origin=*`;
                 const hipoUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(rawQuery)}`;
 
@@ -559,9 +576,7 @@
                     return;
                 }
 
-                const pageTitle = wikiData.query.search[0].title;
                 const pageId = wikiData.query.search[0].pageid;
-
                 const detailUrl = `https://ru.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages|info&exintro&explaintext&inprop=url&pithumbsize=800&pageids=${pageId}&format=json&origin=*`;
                 const detailRes = await fetch(detailUrl);
                 const detailData = await detailRes.json();
@@ -571,10 +586,8 @@
                 
                 document.getElementById('uniName').innerText = pageInfo.title;
                 document.getElementById('uniSummary').innerText = shortSummary;
-                
-                document.getElementById('uniRecommendation').innerText = `На основе верифицированных данных из Wikipedia и Hipo Universities API, ${pageInfo.title} является действующим учебным заведением. Рекомендуется проверить детали на официальном сайте.`;
+                document.getElementById('uniRecommendation').innerText = `На основе верифицированных данных из Wikipedia и Hipo Universities API, ${pageInfo.title} является действующим учебным заведением.`;
 
-                // Данные из Hipo API, если найдены
                 let webSite = pageInfo.fullurl || '#';
                 let countryStr = "Международный реестр";
                 if (hipoData && hipoData.length > 0) {
@@ -601,13 +614,11 @@
 
                 document.getElementById('uniScores').innerText = "Пороговые баллы и требования соответствуют стандартам аккредитации учебного заведения.";
 
-                // Источники
                 const sourcesContainer = document.getElementById('uniSources');
                 sourcesContainer.innerHTML = '';
                 sourcesContainer.innerHTML += `<a href="${pageInfo.fullurl || '#'}" target="_blank" class="source-btn">🔗 Wikipedia API</a>`;
                 sourcesContainer.innerHTML += `<span class="source-btn">🌐 Hipo Universities API</span>`;
 
-                // Фотографии
                 const photosContainer = document.getElementById('uniPhotos');
                 photosContainer.innerHTML = '';
                 
