@@ -1,13 +1,16 @@
 {
-  "name": "uniview-ai",
+  "name": "steppetech",
   "version": "1.0.0",
-  "description": "UniView AI Service",
+  "description": "AI University Search Service for Kazakhstan",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "node-fetch": "^2.6.9"
+    "@google/genai": "^0.1.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
   }
 }
