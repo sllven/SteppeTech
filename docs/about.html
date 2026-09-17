@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ — UniView AI</title>
+    <title>О нас — SteppeTech</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #2563eb; --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --border: #e2e8f0; --radius: 12px; }
@@ -13,40 +13,41 @@
         .logo { font-weight: 700; font-size: 1.25rem; color: var(--primary); text-decoration: none; }
         .container { max-width: 800px; margin: 3rem auto; padding: 2.5rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); flex: 1; width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         h1 { font-size: 2rem; margin-bottom: 1.5rem; }
-        h2 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; color: var(--primary); }
-        p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1rem; }
         .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
         .back-link:hover { text-decoration: underline; }
-        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-        footer .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-        footer a { color: var(--text-muted); text-decoration: none; }
+        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 2rem 1.5rem; margin-top: auto; }
+        .footer-content { max-width: 500px; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; }
+        .footer-column { display: flex; flex-direction: column; gap: 0.8rem; }
+        .footer-column.right { text-align: right; }
+        footer a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         footer a:hover { color: var(--primary); }
+        .footer-copyright { text-align: center; color: #94a3b8; font-size: 0.85rem; }
     </style>
 </head>
 <body>
-    <header><a href="https://st.mansur.cfd" class="logo">UniView AI</a></header>
+    <header><a href="https://st.mansur.cfd" class="logo">SteppeTech AI</a></header>
     <div class="container">
         <a href="https://st.mansur.cfd" class="back-link">← На главную</a>
-        <h1>Часто задаваемые вопросы (FAQ)</h1>
-        
-        <h2>Как работает поиск университетов?</h2>
-        <p>Поиск использует интеллектуальные алгоритмы Gemini AI для сбора актуальных данных об учебных заведениях по всему миру.</p>
-
-        <h2>Почему для 2 режима требуется аккаунт?</h2>
-        <p>Полная аналитика, пороговые баллы и индивидуальные ИИ-рекомендации доступны только авторизованным пользователям для сохранения истории запросов.</p>
-
-        <h2>Каким требованиям должен отвечать пароль?</h2>
-        <p>Пароль должен содержать от 8 символов, как минимум 1 заглавную букву, 1 цифру и 1 специальный символ из набора: - _ . ! ?</p>
+        <h1>Подробнее о нас</h1>
+        <p>SteppeTech AI — это инновационный информационный сервис, созданный для помощи абитуриентам и студентам в выборе учебных заведений.</p>
+        <p>Мы используем передовые технологии для агрегации, структурирования и верификации данных об университетах, делая процесс поступления прозрачным и удобным.</p>
     </div>
     <footer>
-        <div class="footer-links">
-            <a href="about.html">Подробнее о нас</a>
-            <a href="pp.html">Политика Конфиденциальности</a>
-            <a href="t.html">Условия Пользования</a>
-            <a href="faq.html">FAQ</a>
-            <a href="cc.html">Контакты</a>
+        <div class="footer-content">
+            <div class="footer-column">
+                <a href="about.html">Подробнее о нас</a>
+                <a href="pp.html">Политика Конфиденциальности</a>
+                <a href="t.html">Условия Пользования</a>
+            </div>
+            <div class="footer-column right">
+                <a href="faq.html">FAQ</a>
+                <a href="cc.html">Контакты</a>
+            </div>
         </div>
-        <p>© 2026 UniView AI. Все права защищены.</p>
+        <div class="footer-copyright">
+            © 2026 SteppeTech. Все права защищены.
+        </div>
     </footer>
 </body>
 </html>
