@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SteppeTech — AI  Сервис  поиска  университетов</title>
+    <title>SteppeTech — AI Сервис поиска университетов</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -95,7 +95,7 @@
 
     <script>
         async function handleSearch() {
-            const query = document.getElementById('uniInput').value.trim();
+            const query = document.getElementById('uniInput').value.trim().toLowerCase();
             const loading = document.getElementById('loading');
             const results = document.getElementById('results');
             const resContent = document.getElementById('resContent');
@@ -109,64 +109,27 @@
             results.classList.remove('active');
 
             try {
-                // Если бэкенд развернут на Render/Railway, замените '/api/search' на полный URL сервера
-                const response = await fetch('/api/search', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query })
-                });
-                
+                // Загружаем данные из локального файла universities.json
+                const response = await fetch('universities.json');
                 const data = await response.json();
-                loading.style.display = 'none';
                 
-                if (data.success) {
+                loading.style.display = 'none';
+
+                // Поиск совпадений в JSON
+                const matched = data.filter(uni => uni.name.toLowerCase().includes(query));
+
+                if (matched.length > 0) {
                     results.classList.add('active');
-                    resContent.innerText = data.data;
+                    resContent.innerText = matched.map(uni => `🎓 ${uni.name}\n\nℹ️ ${uni.info}`).join('\n\n---\n\n');
                 } else {
-                    alert(data.error || 'Произошла ошибка при обработке запроса');
+                    results.classList.add('active');
+                    resContent.innerText = 'Университет не найден в базе данных. Попробуйте ввести: КазНУ, Назарбаев, КБТУ или ЕНУ.';
                 }
             } catch (err) {
                 loading.style.display = 'none';
-                alert('Ошибка соединения с сервером Node.js. GitHub Pages не может исполнять серверный код без внешней API.');
+                alert('Ошибка загрузки базы данных. Убедитесь, что файл universities.json создан в корне репозитория.');
             }
         }
     </script>
-    async function handleSearch() {
-        const query = document.getElementById('uniInput').value.trim().toLowerCase();
-        const loading = document.getElementById('loading');
-        const results = document.getElementById('results');
-        const resContent = document.getElementById('resContent');
-        
-        if (!query) {
-            alert('Пожалуйста, введите название университета.');
-            return;
-        }
-
-        loading.style.display = 'block';
-        results.classList.remove('active');
-
-        try {
-            // Загружаем данные из локального файла JSON
-            const response = await fetch('universities.json');
-            const data = await response.json();
-            
-            loading.style.display = 'none';
-
-            // Ищем совпадения в базе данных
-            const matched = data.filter(uni => uni.name.toLowerCase().includes(query));
-
-            if (matched.length > 0) {
-                results.classList.add('active');
-                resContent.innerText = matched.map(uni => `🎓 ${uni.name}\n\nℹ️ ${uni.info}`).join('\n\n---\n\n');
-            } else {
-                results.classList.add('active');
-                resContent.innerText = 'Университет не найден в нашей базе данных. Попробуйте другой запрос (например: КазНУ, Назарбаев).';
-            }
-        } catch (err) {
-            loading.style.display = 'none';
-            alert('Ошибка загрузки локальной базы данных университетов.');
-        }
-    }
-</script>
 </body>
 </html>
