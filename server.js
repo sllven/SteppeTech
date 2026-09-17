@@ -1,193 +1,193 @@
 const express = require('express');
-const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcryptjs');
+const cors = require('cors');
 const path = require('path');
-const fetch = require('node-fetch');
+const fs = require('fs');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Инициализация Gemini API (ключ берется из переменных окружения процесса)
+const ai = new GoogleGenAI();
+
 app.use(express.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const DATA_FILE = process.env.DATA_PATH || path.join(__dirname, 'data', 'db.json');
+// Создание папки /data и базы данных SQLite
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+}
 
-function loadDB() {
-    try {
-        if (fs.existsSync(DATA_FILE)) {
-            const data = fs.readFileSync(DATA_FILE, 'utf8');
-            return JSON.parse(data);
-        }
-    } catch (e) {
-        console.error("Error reading database", e);
+const dbPath = path.join(dataDir, 'database.sqlite');
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error('Ошибка подключения к SQLite:', err.message);
+    } else {
+        console.log('📦 База данных подключена успешно (/data/database.sqlite)');
     }
-    return { users: [], history: {} };
-}
+});
 
-function saveDB(db) {
-    try {
-        const dir = path.dirname(DATA_FILE);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2), 'utf8');
-    } catch (e) {
-        console.error("Error saving database", e);
-    }
-}
+// Создание таблиц (Юзеры и История поиска)
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        avatar TEXT
+    )`);
 
-// Инициализация дефолтного аккаунта Test / parol
-let db = loadDB();
-if (!db.users.find(u => u.username === 'Test')) {
-    db.users.push({ username: 'Test', password: 'parol' });
-    saveDB(db);
-}
+    db.run(`CREATE TABLE IF NOT EXISTS history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        query TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+});
 
-// Проверка пароля (мин 8 символов, 1 заглавная, 1 цифра, 1 спецсимвол из - _ . ! ?)
-function validatePassword(pass) {
-    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\-_.\!?])[A-Za-z\d\-_.\!?]{8,}$/;
-    return regex.test(pass);
-}
+// --- ЭНДПОИНТЫ АВТОРИЗАЦИИ И ПРОФИЛЯ ---
 
-// Регистрация
-app.post('/api/register', (req, res) => {
-    let { username, password } = req.body;
-    username = username ? username.trim() : '';
-
+// Регистрация (проверка на уникальность юзернейма)
+app.post('/api/register', async (req, res) => {
+    const { username, password } = req.body;
     if (!username || !password) {
-        return res.status(400).json({ error: "Заполните все поля" });
+        return res.status(400).json({ success: false, error: 'Заполните все поля' });
     }
 
-    const existing = db.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-    if (existing) {
-        return res.status(400).json({ error: "Данный юзернейм уже занят" });
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        db.run(`INSERT INTO users (username, password, avatar) VALUES (?, ?, ?)`, 
+            [username, hashedPassword, 'https://via.placeholder.com/90'], 
+            function(err) {
+                if (err) {
+                    return res.status(400).json({ success: false, error: 'Такой юзернейм уже занят!' });
+                }
+                res.json({ success: true, user: { username, avatar: 'https://via.placeholder.com/90' } });
+            }
+        );
+    } catch (e) {
+        res.status(500.0).json({ success: false, error: 'Ошибка сервера' });
     }
-
-    // Проверка пароля (если это не дефолтный тестовый вход)
-    if (!(username === 'Test' && password === 'parol')) {
-        if (!validatePassword(password)) {
-            return res.status(400).json({ error: "Пароль должен содержать от 8 символов, 1 заглавную букву, 1 цифру и 1 спецсимвол (- _ . ! ?)" });
-        }
-    }
-
-    db.users.push({ username, password });
-    saveDB(db);
-    res.json({ success: true, user: { username } });
 });
 
 // Вход
 app.post('/api/login', (req, res) => {
-    let { username, password } = req.body;
-    username = username ? username.trim() : '';
-
-    const user = db.users.find(u => u.username === username && u.password === password);
-    if (!user) {
-        return res.status(400).json({ error: "Неверный юзернейм или пароль" });
-    }
-    res.json({ success: true, user: { username: user.username } });
-});
-
-// Изменение юзернейма
-app.post('/api/update-username', (req, res) => {
-    const { oldUsername, newUsername } = req.body;
-    const trimmedNew = newUsername ? newUsername.trim() : '';
-
-    const user = db.users.find(u => u.username === oldUsername);
-    if (!user) return res.status(404).json({ error: "Пользователь не найден" });
-
-    const exists = db.users.find(u => u.username.toLowerCase() === trimmedNew.toLowerCase() && u !== user);
-    if (exists) {
-        return res.status(400).json({ error: "Данный юзернейм уже занят" });
-    }
-
-    user.username = trimmedNew;
-    // перенос истории
-    if (db.history[oldUsername]) {
-        db.history[trimmedNew] = db.history[oldUsername];
-        delete db.history[oldUsername];
-    }
-    saveDB(db);
-    res.json({ success: true, username: trimmedNew });
-});
-
-// Изменение пароля
-app.post('/api/update-password', (req, res) => {
-    const { username, oldPassword, newPassword } = req.body;
-    const user = db.users.find(u => u.username === username && u.password === oldPassword);
-    
-    if (!user) {
-        return res.status(400).json({ error: "Текущий пароль указан неверно" });
-    }
-
-    if (!(username === 'Test' && newPassword === 'parol')) {
-        if (!validatePassword(newPassword)) {
-            return res.status(400).json({ error: "Новый пароль не соответствует требованиям безопасности" });
+    const { username, password } = req.body;
+    db.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, user) => {
+        if (err || !user) {
+            return res.status(400).json({ success: false, error: 'Неверный юзернейм или пароль' });
         }
-    }
-
-    user.password = newPassword;
-    saveDB(db);
-    res.json({ success: true });
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+            return res.status(400).json({ success: false, error: 'Неверный юзернейм или пароль' });
+        }
+        res.json({ success: true, user: { username: user.username, avatar: user.avatar } });
+    });
 });
 
-// Поиск через Gemini API
+// Обновление профиля
+app.post('/api/update-profile', async (req, res) => {
+    const { currentUsername, newUsername, currentPassword, newPassword, avatar } = req.body;
+
+    db.get(`SELECT * FROM users WHERE username = ?`, [currentUsername], async (err, user) => {
+        if (err || !user) return res.status(404).json({ success: false, error: 'Пользователь не найден' });
+
+        let targetPassword = user.password;
+        if (currentPassword && newPassword) {
+            const isValid = await bcrypt.compare(currentPassword, user.password);
+            if (!isValid) return res.status(400).json({ success: false, error: 'Неверный текущий пароль' });
+            targetPassword = await bcrypt.hash(newPassword, 10);
+        }
+
+        let targetUsername = currentUsername;
+        if (newUsername && newUsername !== currentUsername) {
+            // Проверка уникальности
+            db.get(`SELECT * FROM users WHERE username = ?`, [newUsername], (errCheck, existing) => {
+                if (existing) return res.status(400).json({ success: false, error: 'Юзернейм уже занят' });
+                
+                executeProfileUpdate(newUsername, targetPassword, avatar || user.avatar, currentUsername, res);
+            });
+        } else {
+            executeProfileUpdate(targetUsername, targetPassword, avatar || user.avatar, currentUsername, res);
+        }
+    });
+});
+
+function executeProfileUpdate(newU, newP, newA, oldU, res) {
+    db.run(`UPDATE users SET username = ?, password = ?, avatar = ? WHERE username = ?`, 
+        [newU, newP, newA, oldU], (err) => {
+            if (err) return res.status(500).json({ success: false, error: 'Ошибка обновления' });
+            // Обновим также историю
+            db.run(`UPDATE history SET username = ? WHERE username = ?`, [newU, oldU]);
+            res.json({ success: true, user: { username: newU, avatar: newA } });
+        }
+    );
+}
+
+// --- ИИ ПОИСК УНИВЕРСИТЕТОВ ЧЕРЕЗ GEMINI ---
 app.post('/api/search', async (req, res) => {
-    const { query, mode, username } = req.body;
-    if (!query) return res.status(400).json({ error: "Пустой запрос" });
+    const { query, mode = '1', username } = req.body; // mode 1 или 2
+    if (!query) return res.status(400).json({ success: false, error: 'Пустой запрос' });
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        return res.status(500).json({ error: "API ключ Gemini не настроен в окружении" });
+    // Сохранение в историю БД (ограничение до 10 последних записей для юзера)
+    if (username) {
+        db.run(`INSERT INTO history (username, query) VALUES (?, ?)`, [username, query], () => {
+            db.run(`DELETE FROM history WHERE username = ? AND id NOT IN (
+                SELECT id FROM history WHERE username = ? ORDER BY created_at DESC LIMIT 10
+            )`, [username, username]);
+        });
     }
-
-    const promptText = `Ты являешься помощником UniView AI.
-Проанализируй университет: ${query}
-И помни что нужен только университет, не выдавай другие данные не связанными с университетом по запросу
-Верни в формате текста:
-- официальное название
-- краткую информацию
-- официальный сайт
-- программы
-- требования
-- источники
-- контакты
-${mode === 'full' ? '- требования зависят от 2 способа, этот способ должен давать абсолютно всю инфу про уник, включая направления, пороговые баллы, необходимые документы, условия и рекомендации на какую профессию стоит идти а на какую лучше выбрать другой университет' : '- краткая сводка'}
-Не придумывай информацию. Если подтвержденных данных недостаточно - укажи это.
-Никогда не используй двойное тире а только одинарное`;
 
     try {
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const response = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
-            })
-        });
-
-        const data = await response.json();
-        const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Информация не найдена или ошибка генерации.";
-
-        // Сохранение истории (максимум 10 элементов, FIFO)
-        if (username) {
-            if (!db.history[username]) db.history[username] = [];
-            db.history[username].unshift(query);
-            if (db.history[username].length > 10) {
-                db.history[username] = db.history[username].slice(0, 10);
-            }
-            saveDB(db);
+        let prompt = "";
+        if (mode === '1') {
+            prompt = `Предоставь подробную информацию об университете "${query}" в строго структурированном виде:
+1. Полное название
+2. Официальный сайт (ссылка)
+3. Инстаграм (ссылка или аккаунт)
+4. Контакты (телефон, email)
+5. Местоположение (город, адрес)
+6. Ссылки на 4-10 реальных фотографий (общежития, главный корпус/универ, кампус, столовая, аудитории) в формате Markdown или списка с прямыми URL картинок.
+7. Какие специальности есть (список основных направлений).`;
+        } else {
+            prompt = `Предоставь глубокий аналитический отчет об университете "${query}":
+1. Полное Название
+2. Официальный сайт
+3. Инстаграм
+4. Контакты
+5. Местоположение
+6. Ссылки на 4-10 фотографий (общежития, универ, кампус, столовая, аудитории).
+7. Список специальностей.
+8. Экспертные рекомендации: на какие перспективные профессии стоит идти в этот вуз, а на какие идти НЕ стоит и почему.
+9. Таблица (в формате Markdown) со следующими колонками: Специальность | Что нужно для ЕНТ (предметы) | Порог на платное | Порог на грант | Нужен ли IELTS (балл).
+10. Любая другая полезная информация для абитуриента.`;
         }
 
-        res.json({ success: true, text: resultText, history: username ? db.history[username] : [] });
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: "Ошибка запроса к Gemini API" });
+        // Вызов Gemini через современный SDK
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
+
+        res.json({ success: true, data: response.text });
+    } catch (error) {
+        console.error('Ошибка Gemini API:', error);
+        res.status(500).json({ success: false, error: 'Ошибка генерации ответа от ИИ. Проверьте API ключ.' });
     }
 });
 
+// Получение истории пользователя
 app.get('/api/history/:username', (req, res) => {
-    const username = req.params.username;
-    res.json({ history: db.history[username] || [] });
+    const { username } = req.params;
+    db.all(`SELECT query FROM history WHERE username = ? ORDER BY created_at DESC LIMIT 10`, [username], (err, rows) => {
+        if (err) return res.json({ success: false, history: [] });
+        res.json({ success: true, history: rows.map(r => r.query) });
+    });
 });
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Сервер SteppeTech запущен на порту ${PORT}`);
 });
