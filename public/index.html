@@ -24,7 +24,6 @@
         
         .top-controls { display: flex; align-items: center; gap: 1rem; position: relative; }
         
-        /* Овальный переключатель языков */
         .lang-pill { display: flex; background: var(--bg-color); border: 1px solid var(--border); border-radius: 20px; padding: 2px; overflow: hidden; }
         .lang-btn { background: transparent; border: none; padding: 4px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: var(--text-muted); border-radius: 16px; transition: all 0.2s; }
         .lang-btn.active { background: var(--primary); color: white; }
@@ -44,16 +43,15 @@
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
         .results-section { margin-top: 1rem; display: none; }
         .results-section.active { display: block; }
-        .result-content-box { background: var(--bg-color); border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; color: var(--text-main); font-size: 0.95rem; line-height: 1.7; overflow-x: auto; }
-        
-        .result-content-box table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; }
-        .result-content-box th, .result-content-box td { border: 1px solid var(--border); padding: 0.6rem 0.8rem; text-align: left; font-size: 0.9rem; }
-        .result-content-box th { background: rgba(37, 99, 235, 0.1); color: var(--primary-dark); }
+        .result-content-box { background: var(--bg-color); border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; color: var(--text-main); font-size: 0.95rem; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
 
-        /* Поисковый блок */
         .search-section-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
         h1 { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-main); font-weight: 700; }
         p.subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        /* Блок настройки API ключа */
+        .api-key-config-box { background: #f1f5f9; border: 1px dashed var(--border); padding: 1rem; border-radius: 8px; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .api-key-config-box.hidden { display: none; }
         
         .search-container { display: flex; flex-direction: column; gap: 1rem; }
         .search-input-wrapper { display: flex; gap: 0.5rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 10px; padding: 6px; width: 100%; }
@@ -69,7 +67,6 @@
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(37, 99, 235, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Блок "Почему стоит выбрать именно нас?" */
         .features-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
         .features-section h2 { font-size: 1.35rem; margin-bottom: 1rem; color: var(--text-main); }
         .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1rem; }
@@ -77,7 +74,6 @@
         .feature-item h3 { font-size: 1rem; color: var(--primary); margin-bottom: 0.4rem; font-weight: 600; }
         .feature-item p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
 
-        /* Страница профиля */
         .profile-page-section { display: none; }
         .profile-page-section.active { display: block; }
         .profile-card-layout { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
@@ -203,7 +199,7 @@
 
                 <div style="margin-top: 2rem; margin-bottom: 2rem;">
                     <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;" id="historyHeaderTitle">История поиска университетов</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="historyHeaderSub">Нажмите на университет из списка, чтобы мгновенно открыть всю информацию о нем:</p>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="historyHeaderSub">Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:</p>
                     <ul id="historyPageList" class="history-page-list"></ul>
                 </div>
 
@@ -216,29 +212,39 @@
             <div id="mainAlert" class="site-notification"></div>
 
             <div id="resultsCard" class="card results-section">
-                <h2 id="resultTitle" style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);">Результат анализа AI:</h2>
+                <h2 id="resultTitle" style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);">Результат анализа Gemini API:</h2>
                 <div id="resContent" class="result-content-box"></div>
             </div>
 
             <div class="search-section-box">
                 <h1 id="mainTitle">Поиск университетов через AI</h1>
-                <p id="mainSubtitle" class="subtitle">Введите название вуза и выберите формат справки.</p>
+                <p id="mainSubtitle" class="subtitle">Введите название вуза для получения реальных данных через Gemini API.</p>
                 
+                <!-- Блок для ввода Gemini API ключа -->
+                <div id="apiKeyConfigBox" class="api-key-config-box">
+                    <label class="form-label" style="color: var(--primary);">🔑 Введите ваш Gemini API ключ (Google AI Studio):</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="password" id="geminiApiKeyInput" class="form-input" placeholder="AIzaSy...">
+                        <button class="search-btn" onclick="saveApiKey()">Сохранить ключ</button>
+                    </div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Ключ сохраняется локально в браузере и используется только для прямых запросов к Gemini API.</span>
+                </div>
+
                 <div class="search-container">
                     <div class="search-input-wrapper">
-                        <input type="text" id="uniInput" class="search-input" placeholder="Название университета...">
+                        <input type="text" id="uniInput" class="search-input" placeholder="Название университета (например: Назарбаев Университет, КазНУ)...">
                         <button id="searchBtn" class="search-btn" onclick="handleSearch('1')">Найти</button>
                     </div>
 
                     <div class="action-buttons-grid">
-                        <button class="mode-action-btn" onclick="handleSearch('1')">Быстрый тест</button>
+                        <button class="mode-action-btn" onclick="handleSearch('1')">Быстрый срез</button>
                         <button class="mode-action-btn" onclick="handleSearch('2')">Полная аналитика</button>
                     </div>
                 </div>
 
                 <div id="loading" class="loading-state">
                     <div class="spinner"></div>
-                    <span id="loadingText">ИИ анализирует базу университетов... Пожалуйста, подождите.</span>
+                    <span id="loadingText">Запрос к Gemini API... Анализ актуальных данных.</span>
                 </div>
             </div>
 
@@ -248,12 +254,12 @@
                 
                 <div class="features-grid">
                     <div class="feature-item">
-                        <h3 id="feat1Title">AI Клиент и точность 99%</h3>
-                        <p id="feat1Desc">Потому что мы используем продвинутый ai client и тщательно проверяем всю информацию на 99% актуальность, исключая устаревшие данные.</p>
+                        <h3 id="feat1Title">Реальные данные через Gemini API</h3>
+                        <p id="feat1Desc">Никаких заготовленных шаблонов — каждый запрос отправляется напрямую к нейросети Google для получения актуальной информации.</p>
                     </div>
                     <div class="feature-item">
                         <h3 id="feat2Title">Мгновенный анализ вузов</h3>
-                        <p id="feat2Desc">Получайте структурированные данные по грантам, факультетам, условиям проживания и проходным баллам за считанные секунды.</p>
+                        <p id="feat2Desc">Получайте актуальные данные по грантам, факультетам, условиям проживания и проходным баллам.</p>
                     </div>
                     <div class="feature-item">
                         <h3 id="feat3Title">Персональная история</h3>
@@ -261,7 +267,7 @@
                     </div>
                     <div class="feature-item">
                         <h3 id="feat4Title">Мультиязычность</h3>
-                        <p id="feat4Desc">Платформа полностью адаптирована на казахском, русском и английском языках для максимального удобства каждого абитуриента.</p>
+                        <p id="feat4Desc">Платформа полностью адаптирована на казахском, русском и английском языках для максимального удобства.</p>
                     </div>
                 </div>
             </div>
@@ -331,64 +337,64 @@
             ru: {
                 title: "UniView AI — Сервис поиска университетов",
                 mainTitle: "Поиск университетов через AI",
-                mainSubtitle: "Введите название вуза и выберите формат справки.",
+                mainSubtitle: "Введите название вуза для получения реальных данных через Gemini API.",
                 searchBtn: "Найти",
-                loadingText: "ИИ анализирует базу университетов... Пожалуйста, подождите.",
+                loadingText: "Запрос к Gemini API... Анализ актуальных данных.",
                 placeholder: "Название университета...",
                 menuProfile: "Профиль", menuHome: "Главная", menuAbout: "Подробнее о нас", menuContacts: "Контакты", menuFaq: "FAQ",
                 fAbout: "Подробнее о нас", fPp: "Политика Конфиденциальности", fT: "Условия Пользования", fFaq: "FAQ", fCc: "Контакты",
-                historyTitle: "История поиска университетов", historySub: "Нажмите на университет из списка, чтобы мгновенно открыть всю информацию о нем:",
+                historyTitle: "История поиска университетов", historySub: "Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:",
                 backBtn: "Вернуться к поиску",
                 featuresMainTitle: "Почему стоит выбрать именно нас?",
                 featuresMainSub: "UniView AI — ваш умный навигатор в сфере высшего образования.",
-                feat1Title: "AI Клиент и точность 99%",
-                feat1Desc: "Потому что мы используем продвинутый ai client и тщательно проверяем всю информацию на 99% актуальность, исключая устаревшие данные.",
+                feat1Title: "Реальные данные через Gemini API",
+                feat1Desc: "Никаких заготовленных шаблонов — каждый запрос отправляется напрямую к нейросети Google для получения актуальной информации.",
                 feat2Title: "Мгновенный анализ вузов",
-                feat2Desc: "Получайте структурированные данные по грантам, факультетам, условиям проживания и проходным баллам за считанные секунды.",
+                feat2Desc: "Получайте актуальные данные по грантам, факультетам, условиям проживания и проходным баллам.",
                 feat3Title: "Персональная история",
                 feat3Desc: "Ваши поисковые запросы сохраняются в профиле, позволяя возвращаться к изучению нужных университетов в один клик.",
                 feat4Title: "Мультиязычность",
-                feat4Desc: "Платформа полностью адаптирована на казахском, русском и английском языках для максимального удобства каждого абитуриента."
+                feat4Desc: "Платформа полностью адаптирована на казахском, русском и английском языках для максимального удобства."
             },
             kz: {
                 title: "UniView AI — Университеттерді іздеу қызметі",
                 mainTitle: "AI арқылы университеттерді іздеу",
-                mainSubtitle: "ЖОО атауын енгізіп, анықтама форматын таңдаңыз.",
+                mainSubtitle: "Gemini API арқылы нақты деректерді алу үшін ЖОО атауын енгізіңіз.",
                 searchBtn: "Іздеу",
-                loadingText: "ЖИ университеттер базасын талдауда... Күте тұрыңыз.",
+                loadingText: "Gemini API сұранысы орындалуда... Мәліметтер талдануда.",
                 placeholder: "Университет атауы...",
                 menuProfile: "Профиль", menuHome: "Басты бет", menuAbout: "Біз туралы", menuContacts: "Байланыс", menuFaq: "FAQ",
                 fAbout: "Біз туралы", fPp: "Құпиялылық саясаты", fT: "Пайдалану шарттары", fFaq: "FAQ", fCc: "Байланыс",
-                historyTitle: "Университеттерді іздеу тарихы", historySub: "Тізімнен университет пен атауды басып, толық ақпаратты көріңіз:",
+                historyTitle: "Университеттерді іздеу тарихы", historySub: "Тізімнен университет пен атауды басып, ақпаратты қайта сұраңыз:",
                 backBtn: "Іздеуге оралу",
                 featuresMainTitle: "Неліктен бізді таңдау керек?",
                 featuresMainSub: "UniView AI — жоғары білім саласындағы сіздің ақылды көмекшіңіз.",
-                feat1Title: "AI Клиент және 99% дәлдік",
-                feat1Desc: "Өйткені біз озық ai client қолданамыз және ескірген мәліметтерді болдырмай, барлық ақпаратты 99% дейін мұқият тексереміз.",
+                feat1Title: "Gemini API арқылы нақты деректер",
+                feat1Desc: "Дайын шаблон жоқ — кез келген сұраныс нақты ақпарат алу үшін тікелей Google нейрожелісіне жіберіледі.",
                 feat2Title: "ЖОО-ларды лезде талдау",
-                feat2Desc: "Гранттар, факультеттер, жатақхана жағдайлары және шекті балдар туралы құрылымдық деректерді бірнеше секундта алыңыз.",
+                feat2Desc: "Гранттар, факультеттер, жатақхана жағдайлары және шекті балдар туралы өзекті деректерді алыңыз.",
                 feat3Title: "Жеке іздеу тарихы",
-                feat3Desc: "Іздеу сұрауларыңыз профильде сақталады, бұл қажетті университеттерге бір басу арқылы қайта оралуға мүмкіндік береді.",
+                feat3Desc: "Іздеу сұрауларыңыз профильде сақталады, қажетті университеттерге бір басу арқылы қайта оралуға болады.",
                 feat4Title: "Көптілділік",
-                feat4Desc: "Платформа әрбір талапкерге ыңғайлы болу үшін қазақ, орыс және ағылшын тілдерінде толық бейімделген."
+                feat4Desc: "Платформа қазақ, орыс және ағылшын тілдерінде толық бейімделген."
             },
             en: {
                 title: "UniView AI — University Search Service",
                 mainTitle: "University Search via AI",
-                mainSubtitle: "Enter university name and select report format.",
+                mainSubtitle: "Enter university name to retrieve real data via Gemini API.",
                 searchBtn: "Search",
-                loadingText: "AI is analyzing database... Please wait.",
+                loadingText: "Requesting Gemini API... Analyzing live data.",
                 placeholder: "University name...",
                 menuProfile: "Profile", menuHome: "Home", menuAbout: "About Us", menuContacts: "Contacts", menuFaq: "FAQ",
                 fAbout: "About Us", fPp: "Privacy Policy", fT: "Terms of Use", fFaq: "FAQ", fCc: "Contacts",
-                historyTitle: "University Search History", historySub: "Click on a university from the list to instantly view all information about it:",
+                historyTitle: "University Search History", historySub: "Click on a university from the list to instantly query live info:",
                 backBtn: "Back to Search",
                 featuresMainTitle: "Why choose us?",
                 featuresMainSub: "UniView AI is your smart navigator in higher education.",
-                feat1Title: "AI Client & 99% Accuracy",
-                feat1Desc: "Because we use an advanced ai client and rigorously check all info for 99% accuracy, eliminating outdated data.",
+                feat1Title: "Real data via Gemini API",
+                feat1Desc: "No hardcoded templates — every query goes directly to Google's neural network for live information.",
                 feat2Title: "Instant University Analysis",
-                feat2Desc: "Get structured data on grants, faculties, living conditions, and passing scores in seconds.",
+                feat2Desc: "Get up-to-date data on grants, faculties, living conditions, and passing scores.",
                 feat3Title: "Personal History",
                 feat3Desc: "Your search queries are saved in your profile, letting you return to universities in a single click.",
                 feat4Title: "Multilingual",
@@ -396,7 +402,10 @@
             }
         };
 
+        let currentLang = 'ru';
+
         function changeLanguage(lang, btn) {
+            currentLang = lang;
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -445,10 +454,27 @@
             const alertBox = document.getElementById(elementId);
             alertBox.innerText = message;
             alertBox.className = "site-notification active " + (isError ? "error" : "");
-            setTimeout(() => { alertBox.classList.remove('active'); }, 4000);
+            setTimeout(() => { alertBox.classList.remove('active'); }, 5000);
         }
 
         let currentUser = JSON.parse(localStorage.getItem('uniview_current_user')) || null;
+        let geminiApiKey = localStorage.getItem('uniview_gemini_key') || '';
+
+        // Проверяем при загрузке, сохранен ли ключ
+        window.addEventListener('DOMContentLoaded', () => {
+            if (geminiApiKey) {
+                document.getElementById('apiKeyConfigBox').classList.add('hidden');
+            }
+        });
+
+        function saveApiKey() {
+            const keyInput = document.getElementById('geminiApiKeyInput').value.trim();
+            if (!keyInput) { showSiteAlert('mainAlert', 'Введите валидный API ключ Gemini', true); return; }
+            geminiApiKey = keyInput;
+            localStorage.setItem('uniview_gemini_key', geminiApiKey);
+            document.getElementById('apiKeyConfigBox').classList.add('hidden');
+            showSiteAlert('mainAlert', 'Gemini API ключ успешно сохранен!');
+        }
 
         function openProfilePage() {
             toggleMenu();
@@ -485,7 +511,6 @@
         async function saveNewUsername() {
             const newName = document.getElementById('newUsernameInput').value.trim();
             if (!newName) { showSiteAlert('profileAlert', 'Введите новый юзернейм', true); return; }
-
             currentUser.username = newName;
             localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
             document.getElementById('profUsername').innerText = currentUser.username;
@@ -496,7 +521,6 @@
         async function saveNewPassword() {
             const newPass = document.getElementById('newPassInput').value;
             if (!newPass) { showSiteAlert('profileAlert', 'Введите новый пароль', true); return; }
-
             toggleEditBox('editPassBox');
             showSiteAlert('profileAlert', 'Пароль успешно изменен!');
         }
@@ -505,10 +529,8 @@
             const user = document.getElementById('regUser').value.trim();
             const pass = document.getElementById('regPass').value;
             const confirmPass = document.getElementById('regConfirmPass').value;
-
             if (!user || !pass) { showSiteAlert('modalAlert', 'Заполните все поля', true); return; }
             if (pass !== confirmPass) { showSiteAlert('modalAlert', 'Пароли не совпадают', true); return; }
-
             currentUser = { username: user, avatar: 'https://via.placeholder.com/90' };
             localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
             closeAuthModal();
@@ -517,10 +539,7 @@
 
         async function handleLogin() {
             const user = document.getElementById('loginUser').value.trim();
-            const pass = document.getElementById('loginPass').value;
-
             if (!user) { showSiteAlert('modalAlert', 'Введите юзернейм', true); return; }
-
             currentUser = { username: user, avatar: 'https://via.placeholder.com/90' };
             localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
             closeAuthModal();
@@ -541,7 +560,7 @@
                 history.forEach(uniName => {
                     const li = document.createElement('li');
                     li.className = 'history-page-item';
-                    li.innerHTML = `<span>${uniName}</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Смотреть инфо &rarr;</span>`;
+                    li.innerHTML = `<span>${uniName}</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Запросить инфо &rarr;</span>`;
                     li.onclick = () => {
                         goHome();
                         document.getElementById('uniInput').value = uniName;
@@ -554,6 +573,7 @@
             }
         }
 
+        // РЕАЛЬНЫЙ ЗАПРОС К GEMINI API
         async function handleSearch(mode) {
             const input = document.getElementById('uniInput');
             const loading = document.getElementById('loading');
@@ -563,10 +583,16 @@
             const query = input.value.trim();
             if (!query) { showSiteAlert('mainAlert', 'Введите название университета', true); return; }
 
+            if (!geminiApiKey) {
+                document.getElementById('apiKeyConfigBox').classList.remove('hidden');
+                showSiteAlert('mainAlert', 'Пожалуйста, введите ваш Gemini API ключ в поле выше!', true);
+                return;
+            }
+
             loading.style.display = 'flex';
             resultsCard.classList.remove('active');
 
-            // Сохраняем в историю localStorage
+            // Сохранение в историю
             if (currentUser) {
                 let hKey = 'uniview_history_' + currentUser.username;
                 let history = JSON.parse(localStorage.getItem(hKey)) || [];
@@ -576,25 +602,37 @@
                 }
             }
 
-            // Имитируем запрос к AI с гарантированным ответом
-            setTimeout(() => {
+            let promptText = `Дай подробную академическую и практическую информацию об университете: "${query}". 
+            Формат ответа: ${mode === '2' ? 'Полная углубленная аналитика (факультеты, проходные баллы, гранты, условия проживания, трудоустройство)' : 'Быстрый экспертный срез (основные показатели, гранты, проходной балл)'}. 
+            Отвечай на языке: ${currentLang === 'kz' ? 'казахском' : currentLang === 'en' ? 'английском' : 'русском'}.`;
+
+            try {
+                // Используем актуальную модель gemini-2.5-flash с REST API
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: promptText }]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка API: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Не удалось получить ответ от модели.";
+
                 loading.style.display = 'none';
                 resultsCard.classList.add('active');
+                resContent.innerText = aiResponse;
 
-                let responseHtml = `<strong>Анализ вуза: ${query}</strong><br><br>` +
-                    `• <strong>Статус ИИ-клиента:</strong> Проверено с точностью 99% на основе официальных данных министерства и сайтов вузов.<br>` +
-                    `• <strong>Формат справки:</strong> ${mode === '2' ? 'Полная углубленная аналитика' : 'Быстрый экспертный срез'}<br><br>` +
-                    `<table>` +
-                    `<tr><th>Параметр</th><th>Показатель</th></tr>` +
-                    `<tr><td>Средний проходной балл (ЕНТ/SAT)</td><td>115+ баллов</td></tr>` +
-                    `<tr><td>Количество грантов</td><td>Высокое выделение квот на технические и IT специальности</td></tr>` +
-                    `<tr><td>Наличие общежития</td><td>Предоставляется 92% иногородних студентов</td></tr>` +
-                    `<tr><td>Трудоустройство выпускников</td><td>88% в течение первых 6 месяцев после выпуска</td></tr>` +
-                    `</table><br>` +
-                    `<strong>Заключение UniView AI:</strong> Университет полностью соответствует современным стандартам образования, обладает мощной технической базой и сильным профессорско-преподавательским составом.`;
-
-                resContent.innerHTML = responseHtml;
-            }, 800);
+            } catch (error) {
+                loading.style.display = 'none';
+                showSiteAlert('mainAlert', 'Ошибка при запросе к Gemini API: ' + error.message, true);
+            }
         }
     </script>
 </body>
