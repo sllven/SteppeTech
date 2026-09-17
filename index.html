@@ -72,7 +72,7 @@
             </div>
 
             <div id="loading" class="loading-state">
-                ⏳ Запрос обрабатывается через AI и сохраняется в базу данных SQLite... Пожалуйста, подождите.
+                ⏳ Запрос обрабатывается... Пожалуйста, подождите.
             </div>
 
             <div id="results" class="results-section">
@@ -84,11 +84,11 @@
 
     <footer>
         <div class="footer-links">
-            <a href="about/index.html">Подробнее о нас</a>
-            <a href="pp/index.html">Политика</a>
-            <a href="t/index.html">Условия</a>
-            <a href="faq/index.html">FAQ</a>
-            <a href="cc/index.html">Контакты</a>
+            <a href="about.html">Подробнее о нас</a>
+            <a href="pp.html">Политика</a>
+            <a href="t.html">Условия</a>
+            <a href="faq.html">FAQ</a>
+            <a href="cc.html">Контакты</a>
         </div>
         <p>© 2026 SteppeTech. Все права защищены.</p>
     </footer>
@@ -109,6 +109,7 @@
             results.classList.remove('active');
 
             try {
+                // Если бэкенд развернут на Render/Railway, замените '/api/search' на полный URL сервера
                 const response = await fetch('/api/search', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -126,7 +127,7 @@
                 }
             } catch (err) {
                 loading.style.display = 'none';
-                alert('Ошибка соединения с сервером Node.js.');
+                alert('Ошибка соединения с сервером Node.js. GitHub Pages не может исполнять серверный код без внешней API.');
             }
         }
     </script>
