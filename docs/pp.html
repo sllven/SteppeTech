@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Политика конфиденциальности — UniView AI</title>
+    <title>Политика конфиденциальности — SteppeTech</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #2563eb; --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --border: #e2e8f0; --radius: 12px; }
@@ -18,43 +18,47 @@
         ul { padding-left: 1.5rem; margin-bottom: 1rem; }
         .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
         .back-link:hover { text-decoration: underline; }
-        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-        footer .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-        footer a { color: var(--text-muted); text-decoration: none; }
+        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 2rem 1.5rem; margin-top: auto; }
+        .footer-content { max-width: 500px; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; }
+        .footer-column { display: flex; flex-direction: column; gap: 0.8rem; }
+        .footer-column.right { text-align: right; }
+        footer a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         footer a:hover { color: var(--primary); }
+        .footer-copyright { text-align: center; color: #94a3b8; font-size: 0.85rem; }
     </style>
 </head>
 <body>
-    <header>
-        <a href="https://st.mansur.cfd" class="logo">UniView AI</a>
-    </header>
-
+    <header><a href="https://st.mansur.cfd" class="logo">SteppeTech AI</a></header>
     <div class="container">
         <a href="https://st.mansur.cfd" class="back-link">← На главную</a>
         <h1>Политика конфиденциальности</h1>
-        <p>UniView AI — информационный сервис, предназначенный для поиска и получения информации об университетах. Мы уважаем конфиденциальность пользователей и стремимся обеспечивать безопасное использование сайта.</p>
+        <p>SteppeTech — информационный сервис, предназначенный для поиска и получения информации об университетах. Мы уважаем конфиденциальность пользователей и стремимся обеспечивать безопасное использование сайта.</p>
 
-        <h2>1. Какие данные мы можем собирать</h2>
+        <h2>1. Какие данные мы собираем</h2>
         <ul>
-            <li>Имя пользователя (username);</li>
-            <li>Данные, необходимые для создания и использования аккаунта;</li>
-            <li>Пароль в защищённом виде;</li>
-            <li>История поисковых запросов.</li>
+            <li>Имя пользователя и техническую информацию;</li>
+            <li>Историю поисковых запросов;</li>
+            <li>Данные, необходимые для обеспечения стабильной работы сервиса.</li>
         </ul>
 
-        <h2>2. Безопасность и Cookies</h2>
-        <p>Сайт использует cookies и стандартные технологии защиты для сохранения авторизации и стабильной работы сервиса.</p>
+        <h2>2. Защита данных</h2>
+        <p>Мы применяем технические меры безопасности для защиты информации пользователей от несанкционированного доступа.</p>
     </div>
-
     <footer>
-        <div class="footer-links">
-            <a href="about.html">Подробнее о нас</a>
-            <a href="pp.html">Политика Конфиденциальности</a>
-            <a href="t.html">Условия Пользования</a>
-            <a href="faq.html">FAQ</a>
-            <a href="cc.html">Контакты</a>
+        <div class="footer-content">
+            <div class="footer-column">
+                <a href="about.html">Подробнее о нас</a>
+                <a href="pp.html">Политика Конфиденциальности</a>
+                <a href="t.html">Условия Пользования</a>
+            </div>
+            <div class="footer-column right">
+                <a href="faq.html">FAQ</a>
+                <a href="cc.html">Контакты</a>
+            </div>
         </div>
-        <p>© 2026 UniView AI. Все права защищены.</p>
+        <div class="footer-copyright">
+            © 2026 SteppeTech. Все права защищены.
+        </div>
     </footer>
 </body>
 </html>
