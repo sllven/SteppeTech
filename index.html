@@ -56,31 +56,13 @@
             gap: 8px;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .about-link-header {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .about-link-header:hover {
-            color: var(--primary);
-        }
-
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            position: relative;
         }
 
-        /* Сначала языки, потом отдельно три точки */
         .lang-switcher {
             display: flex;
             background: var(--bg-color);
@@ -107,37 +89,92 @@
             color: white;
         }
 
+        /* Рабочие три точки и меню */
+        .dots-wrapper {
+            position: relative;
+        }
+
         .lang-dots {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
             color: var(--text-muted);
             font-weight: bold;
             font-size: 1.1rem;
             letter-spacing: 2px;
             user-select: none;
-            padding: 0 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-dots:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            width: 200px;
+            padding: 8px 0;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 8px 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-color);
+            color: var(--primary);
         }
 
         .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 800px;
+            margin: auto;
+            padding: 3rem 1rem;
             flex: 1;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .hero {
             text-align: center;
-            margin-bottom: 2.5rem;
+            width: 100%;
         }
 
         .hero h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.025em;
         }
 
         .hero p {
             color: var(--text-muted);
             font-size: 1.1rem;
+            margin-bottom: 2rem;
         }
 
         .search-box {
@@ -148,7 +185,9 @@
             border-radius: 16px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
         }
 
         .search-box input {
@@ -164,9 +203,9 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.6rem 1.5rem;
             border-radius: var(--radius);
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -175,123 +214,7 @@
             background: var(--primary-dark);
         }
 
-        .result-container {
-            display: none;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-            margin-bottom: 3rem;
-        }
-
-        .loader {
-            display: none;
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-muted);
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card-block {
-            background: var(--bg-color);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .card-block ul {
-            list-style-type: disc;
-            padding-left: 20px;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .sources-flex {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 0.5rem;
-        }
-
-        .source-btn {
-            background: var(--bg-color);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-
-        .source-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .photos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .photo-card {
-            background: var(--bg-color);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .photo-card img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-        }
-
-        .photo-meta {
-            padding: 8px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .warning-box {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            text-align: center;
-            font-weight: 500;
-            display: none;
-        }
-
+        /* Нижнее меню */
         footer {
             background: var(--card-bg);
             border-top: 1px solid var(--border);
@@ -347,18 +270,23 @@
 <body>
 
     <header>
-        <div class="header-left">
-            <a href="#" class="logo">UniView AI</a>
-            <a href="#" id="aboutHeaderLink" class="about-link-header">О нас</a>
-        </div>
+        <a href="#" class="logo">UniView AI</a>
         <div class="header-controls">
-            <!-- Сначала языки, потом отдельно три точки -->
+            <!-- Сначала языки -->
             <div class="lang-switcher">
                 <button class="lang-btn" onclick="setLang('kz')">kz</button>
                 <button class="lang-btn active" onclick="setLang('ru')">ru</button>
                 <button class="lang-btn" onclick="setLang('en')">en</button>
             </div>
-            <span class="lang-dots">•••</span>
+            <!-- Отдельно рабочие три точки с меню -->
+            <div class="dots-wrapper">
+                <div class="lang-dots" onclick="toggleMenu(event)">•••</div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="#" class="dropdown-item" id="menuAbout">О нас</a>
+                    <a href="#" class="dropdown-item" id="menuContacts">Контакты</a>
+                    <a href="#" class="dropdown-item" id="menuSupport">Поддержка</a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -366,61 +294,18 @@
         <div class="hero">
             <h1 id="heroTitle">Узнайте правду об университете</h1>
             <p id="heroSubtitle">Искусственный интеллект для верификации учебных заведений по открытым источникам</p>
-        </div>
-
-        <div class="search-box">
-            <input type="text" id="uniInput" placeholder="Введите название университета...">
-            <button class="btn" id="searchBtn" onclick="searchUniversity()">Проверить</button>
-        </div>
-
-        <div id="loader" class="loader">
-            ⏳ Проверяем Wikipedia и Hipo Universities API...
-        </div>
-
-        <div id="warningBox" class="warning-box">
-            Недостаточно подтверждённых данных. Попробуйте снова либо убедитесь в правильности вашего текста.
-        </div>
-
-        <div id="resultContainer" class="result-container">
-            <h2 id="uniName" style="margin-bottom: 1.5rem;">Название университета</h2>
-
-            <div class="info-grid">
-                <div class="card-block">
-                    <div class="section-title" id="sourcesTitle" style="margin-top:0">Официальные источники</div>
-                    <div class="sources-flex" id="uniSources"></div>
-                </div>
-                <div class="card-block">
-                    <div class="section-title" id="contactsTitle" style="margin-top:0">Контакты университета</div>
-                    <div id="uniContacts" style="color: var(--text-muted); font-size: 0.95rem;"></div>
-                </div>
+            
+            <div class="search-box">
+                <input type="text" id="uniInput" placeholder="Введите название университета...">
+                <button class="btn" id="searchBtn">Проверить</button>
             </div>
-
-            <div class="info-grid">
-                <div class="card-block">
-                    <div class="section-title" id="specTitle" style="margin-top:0">Специальности и профили</div>
-                    <ul id="uniSpecialties"></ul>
-                </div>
-                <div class="card-block">
-                    <div class="section-title" id="scoreTitle" style="margin-top:0">Требования и пороги баллов</div>
-                    <p id="uniScores" style="color: var(--text-muted); font-size: 0.95rem;"></p>
-                </div>
-            </div>
-
-            <div class="section-title" id="summaryTitle">Краткая информация</div>
-            <p id="uniSummary" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
-
-            <div class="section-title" id="recTitle">Нейтральная рекомендация AI</div>
-            <p id="uniRecommendation" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
-
-            <div class="section-title" id="photosHeaderTitle">Изображения</div>
-            <div class="photos-grid" id="uniPhotos"></div>
         </div>
     </div>
 
     <footer>
         <div class="footer-content">
             <div class="footer-section" style="grid-column: span 2;">
-                <p style="margin-bottom: 0.75rem; font-weight: 600; color: var(--text-main);">© 2026 UniView AI</p>
+                <p id="footerAboutTitle" style="margin-bottom: 0.75rem; font-weight: 600; color: var(--text-main);">О нас</p>
                 <p id="footerDesc">UniView AI — интеллектуальный сервис для поиска, анализа и верификации учебных заведений по открытым мировым источникам.</p>
             </div>
             <div class="footer-section">
@@ -445,24 +330,33 @@
     </footer>
 
     <script>
+        // Открытие/закрытие меню по трем точкам
+        function toggleMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('show');
+        }
+
+        // Закрытие меню при клике вне его
+        window.addEventListener('click', function() {
+            const menu = document.getElementById('dropdownMenu');
+            if (menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        });
+
         let currentLang = 'ru';
 
         const translations = {
             ru: {
-                aboutHeader: "О нас",
                 heroTitle: "Узнайте правду об университете",
                 heroSubtitle: "Искусственный интеллект для верификации учебных заведений по открытым источникам",
                 placeholder: "Введите название университета...",
                 searchBtn: "Проверить",
-                loaderText: "⏳ Проверяем Wikipedia и Hipo Universities API...",
-                warningText: "Недостаточно подтверждённых данных. Попробуйте снова либо убедитесь в правильности вашего текста.",
-                sourcesTitle: "Официальные источники",
-                contactsTitle: "Контакты университета",
-                specTitle: "Специальности и профили",
-                scoreTitle: "Требования и пороги баллов",
-                summaryTitle: "Краткая информация",
-                recTitle: "Нейтральная рекомендация AI",
-                photosHeaderTitle: "Изображения",
+                menuAbout: "О нас",
+                menuContacts: "Контакты",
+                menuSupport: "Поддержка",
+                footerAboutTitle: "О нас",
                 footerDesc: "UniView AI — интеллектуальный сервис для поиска, анализа и верификации учебных заведений по открытым мировым источникам.",
                 navTitle: "Навигация",
                 aboutLink: "Подробнее о нас",
@@ -473,20 +367,14 @@
                 contactsLink: "Контакты"
             },
             kz: {
-                aboutHeader: "Біз туралы",
                 heroTitle: "Университет туралы шындықты біліңіз",
                 heroSubtitle: "Ашық дереккөздер негізінде оқу орындарын тексеруге арналған жасанды интеллект",
                 placeholder: "Университет атауын енгізіңіз...",
                 searchBtn: "Тексеру",
-                loaderText: "⏳ Wikipedia және Hipo Universities API тексерілуде...",
-                warningText: "Расталған деректер жеткіліксіз. Қайтадан көріңіз немесе мәтіннің дұрыстығына көз жеткізіңіз.",
-                sourcesTitle: "Ресми дереккөздер",
-                contactsTitle: "Университет контактілері",
-                specTitle: "Мамандықтар мен бейіндер",
-                scoreTitle: "Талаптар мен шекті баллдар",
-                summaryTitle: "Қысқаша ақпарат",
-                recTitle: "ЖИ бейтарап ұсынысы",
-                photosHeaderTitle: "Суреттер",
+                menuAbout: "Біз туралы",
+                menuContacts: "Контактілер",
+                menuSupport: "Қолдау",
+                footerAboutTitle: "Біз туралы",
                 footerDesc: "UniView AI — әлемдік ашық дереккөздер арқылы оқу орындарын іздеуге және талдауға арналған зияткерлік сервис.",
                 navTitle: "Навигация",
                 aboutLink: "Біз туралы толығырақ",
@@ -497,20 +385,14 @@
                 contactsLink: "Контактілер"
             },
             en: {
-                aboutHeader: "About Us",
                 heroTitle: "Find out the truth about the university",
                 heroSubtitle: "Artificial Intelligence for verifying educational institutions through open sources",
                 placeholder: "Enter university name...",
                 searchBtn: "Verify",
-                loaderText: "⏳ Checking Wikipedia and Hipo Universities API...",
-                warningText: "Insufficient verified data. Please try again or make sure your text is correct.",
-                sourcesTitle: "Official Sources",
-                contactsTitle: "University Contacts",
-                specTitle: "Specialties and Profiles",
-                scoreTitle: "Requirements and Score Thresholds",
-                summaryTitle: "Brief Overview",
-                recTitle: "AI Neutral Recommendation",
-                photosHeaderTitle: "Images",
+                menuAbout: "About Us",
+                menuContacts: "Contacts",
+                menuSupport: "Support",
+                footerAboutTitle: "About Us",
                 footerDesc: "UniView AI is an intelligent service for searching, analyzing, and verifying educational institutions using open global sources.",
                 navTitle: "Navigation",
                 aboutLink: "More about us",
@@ -527,20 +409,14 @@
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
-            document.getElementById('aboutHeaderLink').innerText = translations[lang].aboutHeader;
             document.getElementById('heroTitle').innerText = translations[lang].heroTitle;
             document.getElementById('heroSubtitle').innerText = translations[lang].heroSubtitle;
             document.getElementById('uniInput').placeholder = translations[lang].placeholder;
             document.getElementById('searchBtn').innerText = translations[lang].searchBtn;
-            document.getElementById('loader').innerText = translations[lang].loaderText;
-            document.getElementById('warningBox').innerText = translations[lang].warningText;
-            document.getElementById('sourcesTitle').innerText = translations[lang].sourcesTitle;
-            document.getElementById('contactsTitle').innerText = translations[lang].contactsTitle;
-            document.getElementById('specTitle').innerText = translations[lang].specTitle;
-            document.getElementById('scoreTitle').innerText = translations[lang].scoreTitle;
-            document.getElementById('summaryTitle').innerText = translations[lang].summaryTitle;
-            document.getElementById('recTitle').innerText = translations[lang].recTitle;
-            document.getElementById('photosHeaderTitle').innerText = translations[lang].photosHeaderTitle;
+            document.getElementById('menuAbout').innerText = translations[lang].menuAbout;
+            document.getElementById('menuContacts').innerText = translations[lang].menuContacts;
+            document.getElementById('menuSupport').innerText = translations[lang].menuSupport;
+            document.getElementById('footerAboutTitle').innerText = translations[lang].footerAboutTitle;
             document.getElementById('footerDesc').innerText = translations[lang].footerDesc;
             document.getElementById('navTitle').innerText = translations[lang].navTitle;
             document.getElementById('aboutLink').innerText = translations[lang].aboutLink;
@@ -549,108 +425,6 @@
             document.getElementById('supportTitle').innerText = translations[lang].supportTitle;
             document.getElementById('faqLink').innerText = translations[lang].faqLink;
             document.getElementById('contactsLink').innerText = translations[lang].contactsLink;
-        }
-
-        async function searchUniversity() {
-            const rawQuery = document.getElementById('uniInput').value.trim();
-            if (!rawQuery) return;
-
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('resultContainer').style.display = 'none';
-            document.getElementById('warningBox').style.display = 'none';
-
-            try {
-                const wikiUrl = `https://ru.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(rawQuery)}&format=json&origin=*`;
-                const hipoUrl = `https://universities.hipolabs.com/search?name=${encodeURIComponent(rawQuery)}`;
-
-                const [wikiRes, hipoRes] = await Promise.all([
-                    fetch(wikiUrl),
-                    fetch(hipoUrl)
-                ]);
-
-                const wikiData = await wikiRes.json();
-                const hipoData = await hipoRes.json();
-
-                if (!wikiData.query || wikiData.query.search.length === 0) {
-                    showOnlyWarning();
-                    return;
-                }
-
-                const pageId = wikiData.query.search[0].pageid;
-                const detailUrl = `https://ru.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages|info&exintro&explaintext&inprop=url&pithumbsize=800&pageids=${pageId}&format=json&origin=*`;
-                const detailRes = await fetch(detailUrl);
-                const detailData = await detailRes.json();
-                const pageInfo = detailData.query.pages[pageId];
-
-                let shortSummary = pageInfo.extract || "Описание формируется из открытых источников...";
-                
-                document.getElementById('uniName').innerText = pageInfo.title;
-                document.getElementById('uniSummary').innerText = shortSummary;
-                document.getElementById('uniRecommendation').innerText = `На основе верифицированных данных из Wikipedia и Hipo Universities API, ${pageInfo.title} является действующим учебным заведением.`;
-
-                let webSite = pageInfo.fullurl || '#';
-                let countryStr = "Международный реестр";
-                if (hipoData && hipoData.length > 0) {
-                    if (hipoData[0].web_pages && hipoData[0].web_pages.length > 0) {
-                        webSite = hipoData[0].web_pages[0];
-                    }
-                    if (hipoData[0].country) {
-                        countryStr = hipoData[0].country;
-                    }
-                }
-
-                document.getElementById('uniContacts').innerHTML = `
-                    <b>Сайт:</b> <a href="${webSite}" target="_blank" style="color:var(--primary);">${webSite}</a><br>
-                    <b>Страна (Hipo):</b> ${countryStr}<br>
-                    <b>Статус:</b> Верифицировано по открытым базам
-                `;
-
-                document.getElementById('uniSpecialties').innerHTML = `
-                    <li>Информационные технологии и инженерия</li>
-                    <li>Экономика, финансы и бизнес-администрирование</li>
-                    <li>Гуманитарные и социальные дисциплины</li>
-                    <li>Естественные науки</li>
-                `;
-
-                document.getElementById('uniScores').innerText = "Пороговые баллы и требования соответствуют стандартам аккредитации учебного заведения.";
-
-                const sourcesContainer = document.getElementById('uniSources');
-                sourcesContainer.innerHTML = '';
-                sourcesContainer.innerHTML += `<a href="${pageInfo.fullurl || '#'}" target="_blank" class="source-btn">🔗 Wikipedia API</a>`;
-                sourcesContainer.innerHTML += `<span class="source-btn">🌐 Hipo Universities API</span>`;
-
-                const photosContainer = document.getElementById('uniPhotos');
-                photosContainer.innerHTML = '';
-                
-                let imagesList = [];
-                if (pageInfo.thumbnail) {
-                    imagesList.push(pageInfo.thumbnail.source);
-                }
-                imagesList.push('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600');
-                imagesList.push('https://images.unsplash.com/photo-1562774053-701939374585?w=600');
-
-                imagesList.forEach((imgSrc, index) => {
-                    photosContainer.innerHTML += `
-                        <div class="photo-card">
-                            <img src="${imgSrc}" alt="Campus photo">
-                            <div class="photo-meta">Источник: ${index === 0 ? 'Wikipedia Media' : 'Open Archive'}</div>
-                        </div>
-                    `;
-                });
-
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('resultContainer').style.display = 'block';
-
-            } catch (error) {
-                console.error(error);
-                showOnlyWarning();
-            }
-        }
-
-        function showOnlyWarning() {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('resultContainer').style.display = 'none';
-            document.getElementById('warningBox').style.display = 'block';
         }
     </script>
 </body>
