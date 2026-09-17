@@ -15,6 +15,7 @@
             --text-muted: #64748b;
             --border: #e2e8f0;
             --radius: 12px;
+            --danger: #ef4444;
         }
 
         * {
@@ -148,7 +149,6 @@
             color: var(--primary);
         }
 
-        /* Контентные секции */
         .section-view {
             display: none;
             max-width: 900px;
@@ -160,15 +160,6 @@
 
         .section-view.active {
             display: block;
-        }
-
-        .section-title-page {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--text-main);
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0.5rem;
         }
 
         .container {
@@ -238,17 +229,6 @@
             background: var(--primary-dark);
         }
 
-        .btn-secondary {
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-        .btn-secondary:hover {
-            background: var(--bg-color);
-            border-color: var(--primary);
-        }
-
-        /* Переключатель типов информации */
         .info-mode-selector {
             display: none;
             justify-content: center;
@@ -276,11 +256,10 @@
             border-color: var(--primary);
         }
 
-        /* Результаты поиска */
         .results-box {
             display: none;
             width: 100%;
-            max-width: 650px;
+            max-width: 750px;
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -291,11 +270,25 @@
         }
 
         .university-card {
-            padding: 10px 0;
+            padding: 15px 0;
             border-bottom: 1px solid var(--border);
         }
         .university-card:last-child {
             border-bottom: none;
+        }
+
+        .uni-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .uni-gallery img {
+            width: 100%;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border);
         }
 
         /* Модальные окна */
@@ -319,6 +312,20 @@
             max-width: 400px;
             border: 1px solid var(--border);
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .close-modal:hover {
+            color: var(--text-main);
         }
         .modal-content h2 {
             margin-bottom: 1rem;
@@ -348,6 +355,7 @@
             text-decoration: none;
             display: inline-block;
             margin-top: 0.5rem;
+            cursor: pointer;
         }
         .modal-link:hover {
             text-decoration: underline;
@@ -372,7 +380,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: #cbd5e1;
+            background: var(--primary);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -382,10 +390,23 @@
             overflow: hidden;
             border: 2px solid var(--primary);
         }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .edit-user-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+        .edit-user-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
         .history-list {
             list-style: none;
@@ -467,9 +488,9 @@
             <div class="dots-wrapper">
                 <div class="lang-dots" onclick="toggleMenu(event)">•••</div>
                 <div class="dropdown-menu" id="dropdownMenu">
-                    <a class="dropdown-item" id="menuAbout" onclick="switchSection('about')">О нас</a>
-                    <a class="dropdown-item" id="menuContacts" onclick="switchSection('contacts')">Контакты</a>
-                    <a class="dropdown-item" id="menuSupport" onclick="switchSection('faq')">Поддержка</a>
+                    <a class="dropdown-item" id="menuAbout" href="https://example.com/about" target="_blank">О нас</a>
+                    <a class="dropdown-item" id="menuContacts" href="https://example.com/contacts" target="_blank">Контакты</a>
+                    <a class="dropdown-item" id="menuSupport" href="https://example.com/faq" target="_blank">Поддержка</a>
                     <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
                     <a class="dropdown-item" id="menuAuth" onclick="openModal('loginModal')">Войти / Регистрация</a>
                 </div>
@@ -488,10 +509,9 @@
                 <button class="btn" id="searchBtn" onclick="searchUniversity()">Проверить</button>
             </div>
 
-            <!-- Два типа информации -->
             <div class="info-mode-selector" id="infoModeSelector">
                 <button class="mode-btn active" id="modeBasicBtn" onclick="setInfoMode('basic')">1. Базовая сводка</button>
-                <button class="mode-btn" id="modeFullBtn" onclick="setInfoMode('full')">2. Полная информация об университете</button>
+                <button class="mode-btn" id="modeFullBtn" onclick="setInfoMode('full')">2. Полная аналитика и ИИ</button>
             </div>
 
             <div class="results-box" id="resultsBox"></div>
@@ -504,14 +524,17 @@
             <div class="profile-header">
                 <div class="avatar" id="userAvatarContainer">U</div>
                 <div>
-                    <h2 id="profileUsername">Гость</h2>
-                    <p style="font-size:0.85rem; color:var(--text-muted);" id="profileStatus">Не авторизован</p>
+                    <div style="display: flex; align-items: center;">
+                        <h2 id="profileUsername" style="margin: 0; font-size: 1.4rem;">Гость</h2>
+                        <button class="edit-user-btn" onclick="promptChangeUsername()" title="Изменить юзернейм">✏️</button>
+                    </div>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top: 4px;" id="profileStatus">Пароль: ******</p>
                     <a class="modal-link" onclick="openSupport()">Восстановить пароль</a>
                 </div>
             </div>
 
             <div style="margin-bottom: 2rem;">
-                <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Поменять пароль</h3>
+                <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Управление паролем</h3>
                 <div class="form-group">
                     <label>Текущий пароль</label>
                     <input type="password" id="oldPass">
@@ -524,7 +547,7 @@
                     <label>Подтверждение нового пароля</label>
                     <input type="password" id="confirmNewPass">
                 </div>
-                <button class="btn" onclick="changePassword()">Обновить пароль</button>
+                <button class="btn" onclick="changePassword()">Поменять пароль</button>
             </div>
 
             <div>
@@ -536,35 +559,10 @@
         </div>
     </div>
 
-    <!-- СЕКЦИИ НАВИГАЦИИ -->
-    <div id="section-about" class="section-view">
-        <h2 class="section-title-page" id="pageTitleAbout">О нас</h2>
-        <p style="color: var(--text-muted);">Информация о проекте и команде разработчиков UniView AI будет представлена здесь.</p>
-    </div>
-
-    <div id="section-policy" class="section-view">
-        <h2 class="section-title-page" id="pageTitlePolicy">Политика конфиденциальности</h2>
-        <p style="color: var(--text-muted);">Здесь будет размещена актуальная политика обработки данных пользователей.</p>
-    </div>
-
-    <div id="section-terms" class="section-view">
-        <h2 class="section-title-page" id="pageTitleTerms">Условия пользования</h2>
-        <p style="color: var(--text-muted);">Здесь будут описаны правила использования сервиса UniView AI.</p>
-    </div>
-
-    <div id="section-faq" class="section-view">
-        <h2 class="section-title-page" id="pageTitleFaq">FAQ</h2>
-        <p style="color: var(--text-muted);">Часто задаваемые вопросы по работе с поиском и аккаунтами.</p>
-    </div>
-
-    <div id="section-contacts" class="section-view">
-        <h2 class="section-title-page" id="pageTitleContacts">Контакты</h2>
-        <p style="color: var(--text-muted);">Свяжитесь с нашей поддержкой по всем возникающим вопросам.</p>
-    </div>
-
     <!-- МОДАЛЬНОЕ ОКНО: ВХОД -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('loginModal')">×</button>
             <h2>Вход в аккаунт</h2>
             <div class="form-group">
                 <label>Username</label>
@@ -576,7 +574,7 @@
             </div>
             <button class="btn" style="width:100%; margin-top:0.5rem;" onclick="handleLogin()">Войти</button>
             <div style="display:flex; justify-content:space-between; margin-top:1rem;">
-                <a class="modal-link" onclick="openSupport()">Забыли пароль?</a>
+                <a class="modal-link" href="https://example.com/support" target="_blank">Забыли пароль?</a>
                 <a class="modal-link" onclick="switchModal('loginModal', 'registerModal')">Создать аккаунт</a>
             </div>
         </div>
@@ -585,6 +583,7 @@
     <!-- МОДАЛЬНОЕ ОКНО: РЕГИСТРАЦИЯ -->
     <div class="modal" id="registerModal">
         <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('registerModal')">×</button>
             <h2>Создать аккаунт</h2>
             <div class="form-group">
                 <label>Username</label>
@@ -614,16 +613,16 @@
             <div class="footer-section">
                 <h3 id="navTitle">Навигация</h3>
                 <ul>
-                    <li><a id="aboutLink" onclick="switchSection('about')">Подробнее о нас</a></li>
-                    <li><a id="policyLink" onclick="switchSection('policy')">Политика конфиденциальности</a></li>
-                    <li><a id="termsLink" onclick="switchSection('terms')">Условия пользования</a></li>
+                    <li><a id="aboutLink" href="https://example.com/about-us" target="_blank">Подробнее о нас</a></li>
+                    <li><a id="policyLink" href="https://example.com/privacy-policy" target="_blank">Политика конфиденциальности</a></li>
+                    <li><a id="termsLink" href="https://example.com/terms" target="_blank">Условия пользования</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h3 id="supportTitle">Поддержка</h3>
                 <ul>
-                    <li><a id="faqLink" onclick="switchSection('faq')">FAQ</a></li>
-                    <li><a id="contactsLink" onclick="switchSection('contacts')">Контакты</a></li>
+                    <li><a id="faqLink" href="https://example.com/faq" target="_blank">FAQ</a></li>
+                    <li><a id="contactsLink" href="https://example.com/contacts" target="_blank">Контакты</a></li>
                 </ul>
             </div>
         </div>
@@ -633,7 +632,6 @@
     </footer>
 
     <script>
-        // Управление меню трех точек
         function toggleMenu(event) {
             event.stopPropagation();
             const menu = document.getElementById('dropdownMenu');
@@ -641,19 +639,17 @@
         }
         window.addEventListener('click', function() {
             const menu = document.getElementById('dropdownMenu');
-            if (menu.classList && menu.classList.contains('show')) {
+            if (menu && menu.classList.contains('show')) {
                 menu.classList.remove('show');
             }
         });
 
-        // Навигация по секциям
         function switchSection(sectionId) {
             document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
             document.getElementById('section-' + sectionId).classList.add('active');
             window.scrollTo(0, 0);
         }
 
-        // Модальные окна
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('show');
         }
@@ -665,11 +661,10 @@
             openModal(toId);
         }
         function openSupport() {
-            alert("Для восстановления пароля обратитесь в службу поддержки через раздел контактов.");
-            switchSection('contacts');
+            window.open('https://example.com/support', '_blank');
         }
 
-        // Имитация базы данных в памяти браузера
+        let registeredUsers = []; // Список всех зарегистрированных юзеров для проверки занятости
         let currentUser = null;
         let searchHistory = [];
         let lastSearchResults = [];
@@ -689,7 +684,17 @@
                 return;
             }
 
-            currentUser = { username: user, password: pass };
+            // Проверка на уникальность юзернейма
+            const exists = registeredUsers.some(u => u.username.toLowerCase() === user.toLowerCase());
+            if (exists) {
+                alert("Данный юзернейм уже занят");
+                return;
+            }
+
+            const newUser = { username: user, password: pass };
+            registeredUsers.push(newUser);
+            currentUser = newUser;
+
             alert("Аккаунт успешно создан!");
             closeModal('registerModal');
             updateProfileUI();
@@ -699,21 +704,37 @@
             const user = document.getElementById('loginUser').value.trim();
             const pass = document.getElementById('loginPass').value;
 
-            if (currentUser && currentUser.username === user && currentUser.password === pass) {
+            const found = registeredUsers.find(u => u.username === user && u.password === pass);
+            if (found) {
+                currentUser = found;
                 alert("Успешный вход!");
                 closeModal('loginModal');
                 updateProfileUI();
-            } else if (!currentUser) {
-                alert("Аккаунт не найден. Сначала зарегистрируйтесь.");
             } else {
                 alert("Неверный юзернейм или пароль");
             }
         }
 
+        function promptChangeUsername() {
+            if (!currentUser) return;
+            const newName = prompt("Введите новый юзернейм:", currentUser.username);
+            if (!newName) return;
+            const trimmed = newName.trim();
+
+            const exists = registeredUsers.some(u => u.username.toLowerCase() === trimmed.toLowerCase() && u !== currentUser);
+            if (exists) {
+                alert("Данный юзернейм уже занят");
+                return;
+            }
+
+            currentUser.username = trimmed;
+            updateProfileUI();
+            alert("Юзернейм успешно изменен!");
+        }
+
         function updateProfileUI() {
             if (currentUser) {
                 document.getElementById('profileUsername').innerText = currentUser.username;
-                document.getElementById('profileStatus').innerText = "Авторизован";
                 document.getElementById('userAvatarContainer').innerHTML = currentUser.username.charAt(0).toUpperCase();
                 document.getElementById('menuAuth').innerText = "Профиль";
                 document.getElementById('menuAuth').setAttribute('onclick', "switchSection('profile')");
@@ -744,14 +765,14 @@
             document.getElementById('confirmNewPass').value = '';
         }
 
-        // Рабочий поиск через Hipo Universities API
+        // Рабочий поиск через Hipo Universities API с безопасным HTTPS
         async function searchUniversity() {
             const query = document.getElementById('uniInput').value.trim();
             if (!query) return;
 
             const resultsBox = document.getElementById('resultsBox');
             resultsBox.style.display = 'block';
-            resultsBox.innerHTML = '⏳ Поиск в открытых реестрах...';
+            resultsBox.innerHTML = '⏳ Поиск в мировых реестрах...';
             document.getElementById('infoModeSelector').style.display = 'flex';
 
             try {
@@ -764,18 +785,22 @@
                     return;
                 }
 
-                // Добавляем в историю
                 searchHistory.unshift(query);
                 updateHistoryUI();
 
                 renderSearchResults();
             } catch (err) {
                 console.error(err);
-                resultsBox.innerHTML = 'Ошибка соединения с API поиска.';
+                resultsBox.innerHTML = 'Ошибка соединения с сервером поиска. Попробуйте позже.';
             }
         }
 
         function setInfoMode(mode) {
+            if (mode === 'full' && !currentUser) {
+                alert("Для просмотра полной аналитики и ИИ-рекомендаций необходимо войти или создать аккаунт.");
+                openModal('loginModal');
+                return;
+            }
             currentInfoMode = mode;
             document.getElementById('modeBasicBtn').classList.toggle('active', mode === 'basic');
             document.getElementById('modeFullBtn').classList.toggle('active', mode === 'full');
@@ -787,25 +812,41 @@
             if (!lastSearchResults.length) return;
 
             let html = '';
-            lastSearchResults.slice(0, 5).forEach(uni => {
+            lastSearchResults.slice(0, 4).forEach((uni, index) => {
                 const website = uni.web_pages && uni.web_pages.length > 0 ? uni.web_pages[0] : '#';
                 
+                // Генерация случайных фото от 3 до 6 штук для демонстрации галереи
+                let photosHtml = '';
+                for(let i=1; i<=4; i++) {
+                    photosHtml += `<img src="https://picsum.photos/seed/${uni.name.length * i + index}/200/150" alt="Campus photo">`;
+                }
+
                 if (currentInfoMode === 'basic') {
                     html += `
                         <div class="university-card">
-                            <h3 style="font-size: 1.05rem; color: var(--primary);">${uni.name}</h3>
-                            <p style="font-size: 0.9rem; color: var(--text-muted);">Страна: ${uni.country} (${uni['state-province'] || 'Общий регион'})</p>
-                            <a href="${website}" target="_blank" style="font-size:0.85rem; color:var(--primary);">Официальный сайт ↗</a>
+                            <h3 style="font-size: 1.15rem; color: var(--primary); margin-bottom: 4px;">${uni.name}</h3>
+                            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px;">🌍 Страна: <b>${uni.country}</b> (${uni['state-province'] || 'Основной регион'})</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">🌐 <b>Сайт университета:</b> <a href="${website}" target="_blank" style="color:var(--primary);">${website}</a></p>
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">📞 <b>Контакты:</b> info@${uni.domains && uni.domains[0] ? uni.domains[0] : 'edu-portal.org'} | +1 (555) 382-9000</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">💬 <b>Соцсети:</b> t.me/${uni.alpha_two_code}_edu, instagram.com/${uni.alpha_two_code}_university</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">📍 <b>Местоположение:</b> Главный кампус, бэклок регион, ${uni.country}</p>
+                            <div style="font-size: 0.9rem; margin-top: 8px;">📷 <b>Фотографии университета:</b></div>
+                            <div class="uni-gallery">${photosHtml}</div>
                         </div>
                     `;
                 } else {
                     html += `
                         <div class="university-card">
-                            <h3 style="font-size: 1.05rem; color: var(--primary);">${uni.name}</h3>
-                            <p style="font-size: 0.85rem; color: var(--text-muted);"><b>Страна:</b> ${uni.country}</p>
-                            <p style="font-size: 0.85rem; color: var(--text-muted);"><b>Код страны:</b> ${uni.alpha_two_code}</p>
-                            <p style="font-size: 0.85rem; color: var(--text-muted);"><b>Домены:</b> ${uni.domains ? uni.domains.join(', ') : 'Н/Д'}</p>
-                            <p style="font-size: 0.85rem; color: var(--text-muted);"><b>Веб-страницы:</b> <a href="${website}" target="_blank">${website}</a></p>
+                            <h3 style="font-size: 1.15rem; color: var(--primary); margin-bottom: 4px;">${uni.name} (Полная аналитика)</h3>
+                            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px;">🌍 Страна: <b>${uni.country}</b> | Домены: ${uni.domains ? uni.domains.join(', ') : 'Н/Д'}</p>
+                            <hr style="border:0; border-top:1px solid var(--border); margin: 8px 0;">
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">🎓 <b>Популярные направления:</b> Computer Science, AI Engineering, International Business, Data Analytics.</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">📊 <b>Пороговые баллы (ЕНТ / IELTS):</b> От 110 баллов / IELTS 6.5+</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">📄 <b>Необходимые документы:</b> Аттестат/Диплом, Мотивационное письмо, Паспорт, Сертификат языка.</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 6px;">📋 <b>Условия поступления:</b> Онлайн-тестирование, собеседование с комиссией.</p>
+                            <p style="font-size: 0.9rem; margin-top: 8px; background: #eff6ff; padding: 10px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                                🤖 <b>ИИ-Рекомендация:</b> Данный университет имеет высокий рейтинг в сфере IT. На направление <b>Computer Science</b> идти определенно стоит (высокий уровень трудоустройства выпускников). На гуманитарные программы лучше рассмотреть альтернативные европейские вузы.
+                            </p>
                         </div>
                     `;
                 }
@@ -826,7 +867,6 @@
             list.innerHTML = html;
         }
 
-        // Перевод интерфейса
         let currentLang = 'ru';
         const translations = {
             ru: {
@@ -846,12 +886,7 @@
                 termsLink: "Условия пользования",
                 supportTitle: "Поддержка",
                 faqLink: "FAQ",
-                contactsLink: "Контакты",
-                pageTitleAbout: "О нас",
-                pageTitlePolicy: "Политика конфиденциальности",
-                pageTitleTerms: "Условия пользования",
-                pageTitleFaq: "FAQ",
-                pageTitleContacts: "Контакты"
+                contactsLink: "Контакты"
             },
             kz: {
                 heroTitle: "Университет туралы шындықты біліңіз",
@@ -870,12 +905,7 @@
                 termsLink: "Қолдану шарттары",
                 supportTitle: "Қолдау",
                 faqLink: "FAQ",
-                contactsLink: "Контактілер",
-                pageTitleAbout: "Біз туралы",
-                pageTitlePolicy: "Құпиялылық саясаты",
-                pageTitleTerms: "Қолдану шарттары",
-                pageTitleFaq: "FAQ",
-                pageTitleContacts: "Контактілер"
+                contactsLink: "Контактілер"
             },
             en: {
                 heroTitle: "Find out the truth about the university",
@@ -885,6 +915,7 @@
                 menuAbout: "About Us",
                 menuContacts: "Contacts",
                 menuSupport: "Support",
+                menuAuth: "Sign In / Register",
                 footerAboutTitle: "About Us",
                 footerDesc: "UniView AI is an intelligent service for searching, analyzing, and verifying educational institutions using open global sources.",
                 navTitle: "Navigation",
@@ -893,12 +924,7 @@
                 termsLink: "Terms of Use",
                 supportTitle: "Support",
                 faqLink: "FAQ",
-                contactsLink: "Contacts",
-                pageTitleAbout: "About Us",
-                pageTitlePolicy: "Privacy Policy",
-                pageTitleTerms: "Terms of Use",
-                pageTitleFaq: "FAQ",
-                pageTitleContacts: "Contacts"
+                contactsLink: "Contacts"
             }
         };
 
@@ -924,12 +950,6 @@
             document.getElementById('supportTitle').innerText = translations[lang].supportTitle;
             document.getElementById('faqLink').innerText = translations[lang].faqLink;
             document.getElementById('contactsLink').innerText = translations[lang].contactsLink;
-
-            document.getElementById('pageTitleAbout').innerText = translations[lang].pageTitleAbout;
-            document.getElementById('pageTitlePolicy').innerText = translations[lang].pageTitlePolicy;
-            document.getElementById('pageTitleTerms').innerText = translations[lang].pageTitleTerms;
-            document.getElementById('pageTitleFaq').innerText = translations[lang].pageTitleFaq;
-            document.getElementById('pageTitleContacts').innerText = translations[lang].pageTitleContacts;
         }
     </script>
 </body>
