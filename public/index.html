@@ -56,12 +56,11 @@
         p.subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
         
         .search-container { display: flex; flex-direction: column; gap: 1rem; }
-        .search-input-wrapper { display: flex; gap: 0.5rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 10px; padding: 6px; }
-        .search-input { flex: 1; border: none; background: transparent; padding: 0.5rem 0.75rem; font-size: 1rem; outline: none; }
-        .search-btn { background: var(--primary); color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .search-input-wrapper { display: flex; gap: 0.5rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 10px; padding: 6px; width: 100%; }
+        .search-input { flex: 1; border: none; background: transparent; padding: 0.5rem 0.75rem; font-size: 1rem; outline: none; width: 100%; }
+        .search-btn { background: var(--primary); color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
         .search-btn:hover { background: var(--primary-dark); }
 
-        /* Две новые кнопки режимов внутри рамки */
         .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .mode-action-btn { background: var(--bg-color); border: 1px solid var(--border); padding: 0.85rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-align: center; color: var(--text-main); transition: all 0.2s; }
         .mode-action-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(37, 99, 235, 0.03); }
@@ -70,7 +69,7 @@
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(37, 99, 235, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Модальные окна и профиль */
+        /* Модальные окна */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--card-bg); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
@@ -95,7 +94,7 @@
         .history-item { padding: 0.4rem 0.6rem; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
         .history-item:last-child { border-bottom: none; }
 
-        /* Новый футер с двумя блоками ссылок */
+        /* Футер */
         footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 2rem 1.5rem; margin-top: auto; }
         .footer-content { max-width: 950px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; margin-bottom: 1.5rem; }
         .footer-col { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -106,7 +105,7 @@
 </head>
 <body>
     <header>
-        <a href="index.html" class="logo">SteppeTech AI</a>
+        <a href="https://sllven.github.io/SteppeTech/" class="logo">SteppeTech AI</a>
         <div class="top-controls">
             <!-- Овальный переключатель языков -->
             <div class="lang-pill">
@@ -118,13 +117,11 @@
             <div class="menu-wrapper">
                 <button class="menu-btn" onclick="toggleMenu()">⋮</button>
                 <div id="dropdownMenu" class="dropdown-menu">
-                    <button onclick="openProfileModal()" class="profile-menu-item">
-                        <span id="menuProfileText">Профиль</span> 👤
-                    </button>
-                    <a href="index.html" id="menuHomeText">Главная</a>
-                    <a href="about.html" id="menuAboutText">Подробнее о нас</a>
-                    <a href="cc.html" id="menuContactsText">Контакты</a>
-                    <a href="faq.html" id="menuFaqText">FAQ</a>
+                    <button onclick="openProfileModal()" class="profile-menu-item" id="menuProfileText">Профиль</button>
+                    <a href="https://sllven.github.io/SteppeTech/" id="menuHomeText">Главная</a>
+                    <a href="https://sllven.github.io/SteppeTech/about" id="menuAboutText">Подробнее о нас</a>
+                    <a href="https://sllven.github.io/SteppeTech/cc" id="menuContactsText">Контакты</a>
+                    <a href="https://sllven.github.io/SteppeTech/faq" id="menuFaqText">FAQ</a>
                 </div>
             </div>
         </div>
@@ -144,14 +141,13 @@
             
             <div class="search-container">
                 <div class="search-input-wrapper">
-                    <input type="text" id="uniInput" class="search-input" placeholder="Например: Назарбаев Университет или КазНУ...">
+                    <input type="text" id="uniInput" class="search-input" placeholder="Название университета...">
                     <button id="searchBtn" class="search-btn" onclick="handleSearch('1')">Найти</button>
                 </div>
 
-                <!-- Две кнопки вместо радиокнопок -->
                 <div class="action-buttons-grid">
-                    <button class="mode-action-btn" onclick="handleSearch('1')">⚡ Быстрый тест</button>
-                    <button class="mode-action-btn" onclick="handleSearch('2')">📊 Полная аналитика</button>
+                    <button class="mode-action-btn" onclick="handleSearch('1')">Быстрый тест</button>
+                    <button class="mode-action-btn" onclick="handleSearch('2')">Полная аналитика</button>
                 </div>
             </div>
 
@@ -239,17 +235,17 @@
         </div>
     </div>
 
-    <!-- РАСФАСОВКА ФУТЕРА -->
+    <!-- ФУТЕР (РАСФАСОВКА ПО ДВУМ СТОРОНАМ) -->
     <footer>
         <div class="footer-content">
             <div class="footer-col">
-                <a href="about.html" id="footerAbout">Подробнее о нас</a>
-                <a href="pp.html" id="footerPp">Политика Конфиденциальности</a>
-                <a href="t.html" id="footerT">Условия Пользования</a>
+                <a href="https://sllven.github.io/SteppeTech/about" id="footerAbout">Подробнее о нас</a>
+                <a href="https://sllven.github.io/SteppeTech/pp" id="footerPp">Политика Конфиденциальности</a>
+                <a href="https://sllven.github.io/SteppeTech/t" id="footerT">Условия Пользования</a>
             </div>
             <div class="footer-col" style="align-items: flex-end;">
-                <a href="faq.html" id="footerFaq">FAQ</a>
-                <a href="cc.html" id="footerCc">Контакты</a>
+                <a href="https://sllven.github.io/SteppeTech/faq" id="footerFaq">FAQ</a>
+                <a href="https://sllven.github.io/SteppeTech/cc" id="footerCc">Контакты</a>
             </div>
         </div>
         <div class="footer-copy">© 2026 SteppeTech. Все права защищены.</div>
@@ -263,6 +259,7 @@
                 mainSubtitle: "Введите название вуза и выберите формат справки.",
                 searchBtn: "Найти",
                 loadingText: "ИИ анализирует базу университетов... Пожалуйста, подождите.",
+                placeholder: "Название университета...",
                 menuProfile: "Профиль", menuHome: "Главная", menuAbout: "Подробнее о нас", menuContacts: "Контакты", menuFaq: "FAQ",
                 fAbout: "Подробнее о нас", fPp: "Политика Конфиденциальности", fT: "Условия Пользования", fFaq: "FAQ", fCc: "Контакты"
             },
@@ -272,6 +269,7 @@
                 mainSubtitle: "ЖОО атауын енгізіп, анықтама форматын таңдаңыз.",
                 searchBtn: "Іздеу",
                 loadingText: "ЖИ университеттер базасын талдауда... Күте тұрыңыз.",
+                placeholder: "Университет атауы...",
                 menuProfile: "Профиль", menuHome: "Басты бет", menuAbout: "Біз туралы", menuContacts: "Байланыс", menuFaq: "FAQ",
                 fAbout: "Біз туралы", fPp: "Құпиялылық саясаты", fT: "Пайдалану шарттары", fFaq: "FAQ", fCc: "Байланыс"
             },
@@ -281,6 +279,7 @@
                 mainSubtitle: "Enter university name and select report format.",
                 searchBtn: "Search",
                 loadingText: "AI is analyzing database... Please wait.",
+                placeholder: "University name...",
                 menuProfile: "Profile", menuHome: "Home", menuAbout: "About Us", menuContacts: "Contacts", menuFaq: "FAQ",
                 fAbout: "About Us", fPp: "Privacy Policy", fT: "Terms of Use", fFaq: "FAQ", fCc: "Contacts"
             }
@@ -297,6 +296,7 @@
             document.getElementById('mainSubtitle').innerText = t.mainSubtitle;
             document.getElementById('searchBtn').innerText = t.searchBtn;
             document.getElementById('loadingText').innerText = t.loadingText;
+            document.getElementById('uniInput').placeholder = t.placeholder;
 
             document.getElementById('menuProfileText').innerText = t.menuProfile;
             document.getElementById('menuHomeText').innerText = t.menuHome;
