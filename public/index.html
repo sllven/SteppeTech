@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniView AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 700; font-size: 1.25rem; color: var(--primary); cursor: pointer; }
+        .container { max-width: 800px; margin: auto; padding: 3rem 1rem; flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .section-view { display: none; width: 100%; }
+        .section-view.active { display: block; }
+        .hero { text-align: center; width: 100%; }
+        .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { color: var(--text-muted); margin-bottom: 2rem; }
+        .search-box { display: flex; gap: 10px; background: var(--card-bg); padding: 8px; border-radius: 16px; border: 1px solid var(--border); max-width: 650px; margin: 0 auto 1.5rem auto; }
+        .search-box input { flex: 1; border: none; padding: 0.75rem 1rem; font-size: 1rem; outline: none; background: transparent; }
+        .btn { background: var(--primary); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; }
+        .btn:hover { background: var(--primary-dark); }
+        .info-mode-selector { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; }
+        .mode-btn { background: var(--card-bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 8px; cursor: pointer; color: var(--text-muted); }
+        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .results-box { display: none; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; text-align: left; max-width: 750px; margin: 0 auto; white-space: pre-wrap; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal.show { display: flex; }
+        .modal-content { background: var(--card-bg); padding: 2rem; border-radius: var(--radius); width: 100%; max-width: 400px; position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; }
+        .modal-link { font-size: 0.85rem; color: var(--primary); cursor: pointer; text-decoration: underline; }
+
+        .profile-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; max-width: 650px; margin: 0 auto; }
+        .edit-btn { background: var(--bg-color); border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px; font-size: 0.8rem; }
+        .history-list { list-style: none; margin-top: 10px; }
+        .history-item { padding: 8px 12px; background: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="switchSection('home')">UniView AI</div>
+        <div>
+            <button class="btn" id="authNavBtn" onclick="openModal('loginModal')">Войти / Регистрация</button>
+        </div>
+    </header>
+
+    <!-- ГЛАВНАЯ (ПОИСК) -->
+    <div id="section-home" class="container section-view active">
+        <div class="hero">
+            <h1>Узнайте правду об университете</h1>
+            <p>Интеллектуальный поиск на базе Gemini AI</p>
+            
+            <div class="search-box">
+                <input type="text" id="uniInput" placeholder="Введите название университета...">
+                <button class="btn" onclick="searchUniversity()">Проверить</button>
+            </div>
+
+            <div class="info-mode-selector">
+                <button class="mode-btn active" id="modeBasicBtn" onclick="setInfoMode('basic')">1. Базовая сводка</button>
+                <button class="mode-btn" id="modeFullBtn" onclick="setInfoMode('full')">2. Полная аналитика и ИИ</button>
+            </div>
+
+            <div class="results-box" id="resultsBox"></div>
+        </div>
+    </div>
+
+    <!-- ПРОФИЛЬ -->
+    <div id="section-profile" class="container section-view">
+        <div class="profile-container">
+            <!-- 1. Аккаунт -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 0.5rem;">Аккаунт</h3>
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <span>Юзернейм: <b id="profUser"></b></span>
+                    <button class="edit-btn" onclick="promptChangeUsername()" title="Изменить юзернейм">✏️</button>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <span id="profPassStatus">Пароль: ******</span>
+                    <button class="edit-btn" onclick="promptChangePassword()" title="Изменить пароль">✏️</button>
+                </div>
+                <a class="modal-link" onclick="alert('Для восстановления напишите в поддержку на сайте.')">Восстановить пароль</a>
+            </div>
+
+            <!-- 2. История поиска -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 0.5rem;">История поиска университетов</h3>
+                <ul class="history-list" id="profileHistoryList">
+                    <li style="color: var(--text-muted);">История пуста</li>
+                </ul>
+            </div>
+
+            <!-- 3. Поиск универа (быстрый доступ) -->
+            <div>
+                <button class="btn" onclick="switchSection('home')">Вернуться к поиску университета</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ВХОДА -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('loginModal')">×</button>
+            <h2>Вход</h2>
+            <div class="form-group"><label>Username</label><input type="text" id="loginUser"></div>
+            <div class="form-group"><label>Пароль</label><input type="password" id="loginPass"></div>
+            <button class="btn" style="width:100%;" onclick="handleLogin()">Войти</button>
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+                <span class="modal-link" onclick="openModal('registerModal'); closeModal('loginModal');">Создать аккаунт</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО РЕГИСТРАЦИИ -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('registerModal')">×</button>
+            <h2>Регистрация</h2>
+            <div class="form-group"><label>Username</label><input type="text" id="regUser"></div>
+            <div class="form-group"><label>Пароль</label><input type="password" id="regPass"></div>
+            <button class="btn" style="width:100%;" onclick="handleRegister()">Зарегистрироваться</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentInfoMode = 'basic';
+
+        function switchSection(id) {
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('section-' + id).classList.add('active');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        function setInfoMode(mode) {
+            if (mode === 'full' && !currentUser) {
+                alert("Для 2 режима необходимо войти в аккаунт.");
+                openModal('loginModal');
+                return;
+            }
+            currentInfoMode = mode;
+            document.getElementById('modeBasicBtn').classList.toggle('active', mode === 'basic');
+            document.getElementById('modeFullBtn').classList.toggle('active', mode === 'full');
+        }
+
+        async function handleRegister() {
+            const username = document.getElementById('regUser').value;
+            const password = document.getElementById('regPass').value;
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUser = data.user.username;
+                alert("Регистрация успешна!");
+                closeModal('registerModal');
+                updateProfileUI();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function handleLogin() {
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUser = data.user.username;
+                alert("Вход выполнен!");
+                closeModal('loginModal');
+                updateProfileUI();
+                loadHistory();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        function updateProfileUI() {
+            if (currentUser) {
+                document.getElementById('profUser').innerText = currentUser;
+                document.getElementById('authNavBtn').innerText = "Профиль";
+                document.getElementById('authNavBtn').setAttribute('onclick', "switchSection('profile')");
+            }
+        }
+
+        async function promptChangeUsername() {
+            const newName = prompt("Введите новый юзернейм:");
+            if (!newName) return;
+            const res = await fetch('/api/update-username', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ oldUsername: currentUser, newUsername: newName })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUser = data.username;
+                updateProfileUI();
+                alert("Юзернейм изменен!");
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function promptChangePassword() {
+            const oldP = prompt("Введите текущий пароль:");
+            if (!oldP) return;
+            const newP = prompt("Введите новый пароль (от 8 символов, заглавная буква, цифра, спецсимвол - _ . ! ?):");
+            if (!newP) return;
+
+            const res = await fetch('/api/update-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: currentUser, oldPassword: oldP, newPassword: newP })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert("Пароль успешно изменен!");
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function searchUniversity() {
+            const query = document.getElementById('uniInput').value.trim();
+            if (!query) return;
+
+            const resultsBox = document.getElementById('resultsBox');
+            resultsBox.style.display = 'block';
+            resultsBox.innerText = 'Запрос к Gemini AI...';
+
+            const res = await fetch('/api/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query, mode: currentInfoMode, username: currentUser })
+            });
+            const data = await res.json();
+            if (data.success) {
+                resultsBox.innerText = data.text;
+                if (currentUser) renderHistory(data.history);
+            } else {
+                resultsBox.innerText = data.error;
+            }
+        }
+
+        async function loadHistory() {
+            if (!currentUser) return;
+            const res = await fetch(`/api/history/${currentUser}`);
+            const data = await res.json();
+            renderHistory(data.history);
+        }
+
+        function renderHistory(history) {
+            const list = document.getElementById('profileHistoryList');
+            if (!history || history.length === 0) {
+                list.innerHTML = '<li style="color: var(--text-muted);">История пуста</li>';
+                return;
+            }
+            list.innerHTML = history.map(item => `<li class="history-item">🔍 ${item}</li>`).join('');
+        }
+    </script>
+</body>
+</html>
