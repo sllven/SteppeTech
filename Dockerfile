@@ -1,16 +1,10 @@
 FROM node:18-alpine
+# Устанавливаем системные зависимости для сборки бинарных модулей (например, sqlite3)
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
-
-RUN mkdir -p /data
-
-COPY package.json ./
+COPY package*.json ./
 RUN npm install
-
 COPY . .
-
 EXPOSE 3000
-
-ENV DATA_PATH=/data/db.json
-
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
