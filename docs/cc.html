@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Контакты — UniView AI</title>
+    <title>Контакты — SteppeTech</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #2563eb; --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --border: #e2e8f0; --radius: 12px; }
@@ -16,30 +16,39 @@
         p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem; }
         .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary); text-decoration: none; font-weight: 500; font-size: 0.9rem; }
         .back-link:hover { text-decoration: underline; }
-        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-        footer .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-        footer a { color: var(--text-muted); text-decoration: none; }
+        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 2rem 1.5rem; margin-top: auto; }
+        .footer-content { max-width: 500px; margin: 0 auto 1.5rem auto; display: flex; justify-content: space-between; }
+        .footer-column { display: flex; flex-direction: column; gap: 0.8rem; }
+        .footer-column.right { text-align: right; }
+        footer a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         footer a:hover { color: var(--primary); }
+        .footer-copyright { text-align: center; color: #94a3b8; font-size: 0.85rem; }
     </style>
 </head>
 <body>
-    <header><a href="https://st.mansur.cfd" class="logo">UniView AI</a></header>
+    <header><a href="https://st.mansur.cfd" class="logo">SteppeTech AI</a></header>
     <div class="container">
         <a href="https://st.mansur.cfd" class="back-link">← На главную</a>
         <h1>Контакты</h1>
-        <p>Если у вас возникли вопросы, предложения или проблемы с аккаунтом, вы можете связаться с администрацией сервиса:</p>
-        <p><b>Email поддержки:</b> steppetech@mail.ru</p>
-        <p><b>Telegram:</b> @uniview_support</p>
+        <p>По всем вопросам и предложениям вы можете связаться с администрацией проекта:</p>
+        <p><b>Email:</b> steppetech@mail.ru</p>
+        <p><b>Домен:</b> st.mansur.cfd</p>
     </div>
     <footer>
-        <div class="footer-links">
-            <a href="about.html">Подробнее о нас</a>
-            <a href="pp.html">Политика Конфиденциальности</a>
-            <a href="t.html">Условия Пользования</a>
-            <a href="faq.html">FAQ</a>
-            <a href="cc.html">Контакты</a>
+        <div class="footer-content">
+            <div class="footer-column">
+                <a href="about.html">Подробнее о нас</a>
+                <a href="pp.html">Политика Конфиденциальности</a>
+                <a href="t.html">Условия Пользования</a>
+            </div>
+            <div class="footer-column right">
+                <a href="faq.html">FAQ</a>
+                <a href="cc.html">Контакты</a>
+            </div>
         </div>
-        <p>© 2026 UniView AI. Все права защищены.</p>
+        <div class="footer-copyright">
+            © 2026 SteppeTech. Все права защищены.
+        </div>
     </footer>
 </body>
 </html>
