@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">SteppeTech — AI Сервис поиска университетов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { font-weight: 700; font-size: 1.25rem; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .top-controls { display: flex; align-items: center; gap: 1rem; position: relative; }
+        .lang-select { background: var(--bg-color); border: 1px solid var(--border); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.85rem; color: var(--text-main); cursor: pointer; outline: none; }
+        
+        .menu-wrapper { position: relative; }
+        .menu-btn { background: var(--bg-color); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; color: var(--text-main); }
+        .menu-btn:hover { background: var(--border); }
+        
+        .dropdown-menu { position: absolute; right: 0; top: 45px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.08); width: 200px; display: none; flex-direction: column; overflow: hidden; z-index: 101; }
+        .dropdown-menu.active { display: flex; }
+        .dropdown-menu a, .dropdown-menu button { padding: 0.75rem 1rem; text-align: left; background: none; border: none; font-size: 0.9rem; color: var(--text-main); text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .dropdown-menu a:hover, .dropdown-menu button:hover { background: var(--bg-color); color: var(--primary); }
+        .profile-menu-item { background: rgba(37, 99, 235, 0.08); font-weight: 600; color: var(--primary) !important; border-bottom: 1px solid var(--border); }
+
+        main { flex: 1; max-width: 950px; margin: 2rem auto; padding: 0 1.5rem; width: 100%; }
+        
+        /* Карточка результатов сверху (если уже искали) или пустая */
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
+        
+        .results-section { margin-top: 1rem; display: none; }
+        .results-section.active { display: block; }
+        .result-content-box { background: var(--bg-color); border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; color: var(--text-main); font-size: 0.95rem; line-height: 1.7; overflow-x: auto; }
+        
+        /* Таблицы стилизация */
+        .result-content-box table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; }
+        .result-content-box th, .result-content-box td { border: 1px solid var(--border); padding: 0.6rem 0.8rem; text-align: left; font-size: 0.9rem; }
+        .result-content-box th { background: rgba(37, 99, 235, 0.1); color: var(--primary-dark); }
+
+        /* Фото карточки */
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem; margin-bottom: 1rem; }
+        .photo-card { border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #fff; height: 130px; }
+        .photo-card img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Блок поиска теперь СНИЗУ результатов */
+        .search-section-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-main); font-weight: 700; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .mode-selector { display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 500; }
+        .mode-selector label { cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+
+        .search-container { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+        .search-input { flex: 1; padding: 0.85rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .search-btn { background: var(--primary); color: white; border: none; padding: 0 1.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .search-btn:hover { background: var(--primary-dark); }
+        
+        .loading-state { display: none; align-items: center; justify-content: center; gap: 0.75rem; color: var(--primary); font-weight: 500; margin-top: 1rem; padding: 1rem; background: rgba(37, 99, 235, 0.05); border-radius: 8px; }
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(37, 99, 235, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Модальные окна */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--card-bg); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .modal-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-muted); }
+        .form-input { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; }
+        .form-input:focus { border-color: var(--primary); }
+        .modal-btn { width: 100%; padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+        .modal-btn:hover { background: var(--primary-dark); }
+        .modal-switch { text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); }
+        .modal-switch a { color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; }
+
+        /* Профиль */
+        .profile-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .avatar-wrapper { width: 90px; height: 90px; border-radius: 50%; background: var(--border); overflow: hidden; margin-bottom: 1rem; border: 2px solid var(--primary); }
+        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info { margin-bottom: 1.5rem; width: 100%; position: relative; background: var(--bg-color); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+        .settings-gear-btn { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; }
+        
+        .history-box { width: 100%; text-align: left; margin-top: 1rem; }
+        .history-list { list-style: none; max-height: 160px; overflow-y: auto; background: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; }
+        .history-item { padding: 0.4rem 0.6rem; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+        .history-item:last-child { border-bottom: none; }
+
+        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
+        footer .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+        footer a { color: var(--text-muted); text-decoration: none; }
+        footer a:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">SteppeTech AI</a>
+        <div class="top-controls">
+            <select id="langSelector" class="lang-select" onchange="changeLanguage(this.value)">
+                <option value="ru">RU</option>
+                <option value="kz">KZ</option>
+                <option value="en">EN</option>
+            </select>
+            <div class="menu-wrapper">
+                <button class="menu-btn" onclick="toggleMenu()">[•••]</button>
+                <div id="dropdownMenu" class="dropdown-menu">
+                    <button onclick="openProfileModal()" class="profile-menu-item">
+                        <span id="menuProfileText">Профиль</span> 👤
+                    </button>
+                    <a href="about.html" id="menuAboutText">Подробнее о нас</a>
+                    <a href="cc.html" id="menuContactsText">Контакты</a>
+                    <a href="faq.html" id="menuFaqText">FAQ</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- БЛОК РЕЗУЛЬТАТОВ (ТЕПЕРЬ СВЕРХУ) -->
+        <div id="resultsCard" class="card results-section">
+            <h2 id="resultTitle" style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);">Результат анализа AI:</h2>
+            <div id="resContent" class="result-content-box"></div>
+        </div>
+
+        <!-- БЛОК ПОИСКА (ПЕРЕНЕСЕН ВНИЗ) -->
+        <div class="search-section-box">
+            <h1 id="mainTitle">Поиск университетов через AI</h1>
+            <p id="mainSubtitle" class="subtitle">Введите название вуза и выберите формат справки.</p>
+            
+            <div class="mode-selector">
+                <label><input type="radio" name="searchMode" value="1" checked> Вариант 1 (Общая инфо + фото)</label>
+                <label><input type="radio" name="searchMode" value="2"> Вариант 2 (Полная + Рекомендации + Таблица ЕНТ)</label>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="uniInput" class="search-input" placeholder="Например: Назарбаев Университет или КазНУ...">
+                <button id="searchBtn" class="search-btn" onclick="handleSearch()">Найти</button>
+            </div>
+
+            <div id="loading" class="loading-state">
+                <div class="spinner"></div>
+                <span id="loadingText">ИИ анализирует базу университетов... Пожалуйста, подождите.</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            
+            <!-- Вход -->
+            <div id="loginFormContainer">
+                <div id="loginTitle" class="modal-title">Вход в аккаунт</div>
+                <div class="form-group">
+                    <label class="form-label">Юзернейм</label>
+                    <input type="text" id="loginUser" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" id="loginPass" class="form-input">
+                </div>
+                <button class="modal-btn" onclick="handleLogin()">Войти</button>
+                <div style="margin-top: 0.5rem; text-align: right;">
+                    <a href="cc.html" style="font-size: 0.8rem; color: var(--primary); text-decoration: none;">Забыли пароль? Свяжитесь с админами</a>
+                </div>
+                <div class="modal-switch">
+                    <span>Нет аккаунта?</span> <a onclick="switchAuthTab('register')">Создать аккаунт</a>
+                </div>
+            </div>
+
+            <!-- Регистрация -->
+            <div id="registerFormContainer" style="display: none;">
+                <div id="regTitle" class="modal-title">Создание аккаунта</div>
+                <div class="form-group">
+                    <label class="form-label">Юзернейм</label>
+                    <input type="text" id="regUser" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" id="regPass" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Подтверждение пароля</label>
+                    <input type="password" id="regConfirmPass" class="form-input">
+                </div>
+                <button class="modal-btn" onclick="handleRegister()">Зарегистрироваться</button>
+                <div class="modal-switch">
+                    <span>Уже есть аккаунт?</span> <a onclick="switchAuthTab('login')">Войти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ -->
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 480px;">
+            <button class="modal-close" onclick="closeProfileModal()">&times;</button>
+            <div class="profile-container">
+                <div class="avatar-wrapper">
+                    <img id="profileAvatarImg" src="https://via.placeholder.com/90" alt="Avatar">
+                </div>
+                
+                <div class="profile-info">
+                    <button class="settings-gear-btn" onclick="toggleProfileSettings()" title="Настройки">⚙️</button>
+                    <div style="font-weight: 700; font-size: 1.1rem;" id="profUsername">username</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.2rem;">
+                        Пароль: ******
+                    </div>
+                    <div style="margin-top: 0.4rem;">
+                        <a href="cc.html" style="font-size: 0.85rem; color: var(--primary); text-decoration: none;">Восстановить пароль (через админов)</a>
+                    </div>
+                </div>
+
+                <!-- Настройки профиля (скрыты) -->
+                <div id="profileSettingsBox" style="display: none; width: 100%; text-align: left; background: var(--bg-color); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem;">
+                    <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Изменить данные</div>
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label">Новый юзернейм</label>
+                        <input type="text" id="setNewUser" class="form-input" style="padding: 0.5rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label">Текущий пароль</label>
+                        <input type="password" id="setCurrPass" class="form-input" style="padding: 0.5rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label">Новый пароль</label>
+                        <input type="password" id="setNewPass" class="form-input" style="padding: 0.5rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label">Аватарка (URL)</label>
+                        <input type="text" id="setAvatarUrl" class="form-input" style="padding: 0.5rem;">
+                    </div>
+                    <button class="modal-btn" style="padding: 0.5rem;" onclick="saveProfileChanges()">Сохранить</button>
+                </div>
+
+                <!-- История поиска -->
+                <div class="history-box">
+                    <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem;">История поиска (до 10):</div>
+                    <ul id="historyList" class="history-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="about.html">Подробнее о нас</a>
+            <a href="pp.html">Политика</a>
+            <a href="t.html">Условия</a>
+            <a href="faq.html">FAQ</a>
+            <a href="cc.html">Контакты</a>
+        </div>
+        <p>© 2026 SteppeTech. Все права защищены.</p>
+    </footer>
+
+    <script>
+        const translations = {
+            ru: {
+                title: "SteppeTech — AI Сервис поиска университетов",
+                mainTitle: "Поиск университетов через AI",
+                mainSubtitle: "Введите название вуза и выберите формат справки.",
+                searchBtn: "Найти",
+                loadingText: "ИИ анализирует базу университетов... Пожалуйста, подождите."
+            },
+            kz: {
+                title: "SteppeTech — AI Университеттерді іздеу қызметі",
+                mainTitle: "AI арқылы университеттерді іздеу",
+                mainSubtitle: "ЖОО атауын енгізіп, анықтама форматын таңдаңыз.",
+                searchBtn: "Іздеу",
+                loadingText: "ЖИ университеттер базасын талдауда... Күте тұрыңыз."
+            },
+            en: {
+                title: "SteppeTech — AI University Search Service",
+                mainTitle: "University Search via AI",
+                mainSubtitle: "Enter university name and select report format.",
+                searchBtn: "Search",
+                loadingText: "AI is analyzing database... Please wait."
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('pageTitle').innerText = t.title;
+            document.getElementById('mainTitle').innerText = t.mainTitle;
+            document.getElementById('mainSubtitle').innerText = t.mainSubtitle;
+            document.getElementById('searchBtn').innerText = t.searchBtn;
+            document.getElementById('loadingText').innerText = t.loadingText;
+        }
+
+        function toggleMenu() {
+            document.getElementById('dropdownMenu').classList.toggle('active');
+        }
+
+        let currentUser = JSON.parse(localStorage.getItem('steppetech_current_user')) || null;
+
+        function openProfileModal() {
+            toggleMenu();
+            if (!currentUser) {
+                document.getElementById('authModal').classList.add('active');
+            } else {
+                updateProfileUI();
+                document.getElementById('profileModal').classList.add('active');
+            }
+        }
+
+        function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
+        function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); }
+
+        function switchAuthTab(tab) {
+            if (tab === 'register') {
+                document.getElementById('loginFormContainer').style.display = 'none';
+                document.getElementById('registerFormContainer').style.display = 'block';
+            } else {
+                document.getElementById('registerFormContainer').style.display = 'none';
+                document.getElementById('loginFormContainer').style.display = 'block';
+            }
+        }
+
+        async function handleRegister() {
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value;
+            const confirmPass = document.getElementById('regConfirmPass').value;
+
+            if (!user || !pass) { alert('Заполните поля'); return; }
+            if (pass !== confirmPass) { alert('Пароли не совпадают'); return; }
+
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUser = data.user;
+                localStorage.setItem('steppetech_current_user', JSON.stringify(currentUser));
+                closeAuthModal();
+                alert('Успешная регистрация!');
+                openProfileModal();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function handleLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUser = data.user;
+                localStorage.setItem('steppetech_current_user', JSON.stringify(currentUser));
+                closeAuthModal();
+                openProfileModal();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function updateProfileUI() {
+            if (!currentUser) return;
+            document.getElementById('profUsername').innerText = currentUser.username;
+            document.getElementById('profileAvatarImg').src = currentUser.avatar;
+
+            // Загрузка истории из SQLite
+            const res = await fetch(`/api/history/${currentUser.username}`);
+            const data = await res.json();
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            if (data.success && data.history.length > 0) {
+                data.history.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'history-item';
+                    li.innerText = item;
+                    list.appendChild(li);
+                });
+            } else {
+                list.innerHTML = '<li class="history-item" style="color:var(--text-muted)">История пуста</li>';
+            }
+        }
+
+        function toggleProfileSettings() {
+            const box = document.getElementById('profileSettingsBox');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function saveProfileChanges() {
+            const newUser = document.getElementById('setNewUser').value.trim();
+            const currPass = document.getElementById('setCurrPass').value;
+            const newValPass = document.getElementById('setNewPass').value;
+            const newAvatar = document.getElementById('setAvatarUrl').value.trim();
+
+            const res = await fetch('/api/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    currentUsername: currentUser.username,
+                    newUsername: newUser || currentUser.username,
+                    currentPassword: currPass,
+                    newPassword: newValPass,
+                    avatar: newAvatar
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentUser = data.user;
+                localStorage.setItem('steppetech_current_user', JSON.stringify(currentUser));
+                alert('Изменения сохранены!');
+                document.getElementById('profileSettingsBox').style.display = 'none';
+                updateProfileUI();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function handleSearch() {
+            const input = document.getElementById('uniInput');
+            const loading = document.getElementById('loading');
+            const resultsCard = document.getElementById('resultsCard');
+            const resContent = document.getElementById('resContent');
+            const mode = document.querySelector('input[name="searchMode"]:checked').value;
+            
+            const query = input.value.trim();
+            if (!query) { alert('Введите название'); return; }
+
+            loading.style.display = 'flex';
+            resultsCard.classList.remove('active');
+
+            try {
+                const res = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        query, 
+                        mode, 
+                        username: currentUser ? currentUser.username : null 
+                    })
+                });
+                const data = await res.json();
+                loading.style.display = 'none';
+
+                if (data.success) {
+                    resultsCard.classList.add('active');
+                    // Превращаем маркдаун в HTML с поддержкой таблиц и базовых тегов
+                    let text = data.data
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+                    
+                    resContent.innerHTML = text;
+                } else {
+                    alert(data.error);
+                }
+            } catch (err) {
+                loading.style.display = 'none';
+                alert('Ошибка соединения с сервером');
+            }
+        }
+    </script>
+</body>
+</html>
