@@ -131,5 +131,42 @@
             }
         }
     </script>
+    async function handleSearch() {
+        const query = document.getElementById('uniInput').value.trim().toLowerCase();
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const resContent = document.getElementById('resContent');
+        
+        if (!query) {
+            alert('Пожалуйста, введите название университета.');
+            return;
+        }
+
+        loading.style.display = 'block';
+        results.classList.remove('active');
+
+        try {
+            // Загружаем данные из локального файла JSON
+            const response = await fetch('universities.json');
+            const data = await response.json();
+            
+            loading.style.display = 'none';
+
+            // Ищем совпадения в базе данных
+            const matched = data.filter(uni => uni.name.toLowerCase().includes(query));
+
+            if (matched.length > 0) {
+                results.classList.add('active');
+                resContent.innerText = matched.map(uni => `🎓 ${uni.name}\n\nℹ️ ${uni.info}`).join('\n\n---\n\n');
+            } else {
+                results.classList.add('active');
+                resContent.innerText = 'Университет не найден в нашей базе данных. Попробуйте другой запрос (например: КазНУ, Назарбаев).';
+            }
+        } catch (err) {
+            loading.style.display = 'none';
+            alert('Ошибка загрузки локальной базы данных университетов.');
+        }
+    }
+</script>
 </body>
 </html>
