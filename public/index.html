@@ -1,2015 +1,620 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>UniView AI — Сервис поиска университетов</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-:root{
-    --primary:#2563eb;
-    --primary-dark:#1d4ed8;
-    --bg-color:#f8fafc;
-    --card-bg:#ffffff;
-    --text-main:#0f172a;
-    --text-muted:#64748b;
-    --border:#e2e8f0;
-    --radius:12px;
-}
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Inter,Arial,sans-serif;
-}
-
-html,body{
-    min-height:100%;
-}
-
-body{
-    background:var(--bg-color);
-    color:var(--text-main);
-    line-height:1.6;
-    display:flex;
-    flex-direction:column;
-    min-height:100vh;
-}
-
-/* HEADER */
-
-header{
-    background:var(--card-bg);
-    border-bottom:1px solid var(--border);
-    padding:1rem 2rem;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    position:sticky;
-    top:0;
-    z-index:100;
-}
-
-.logo{
-    font-weight:700;
-    font-size:1.25rem;
-    color:var(--primary);
-    text-decoration:none;
-}
-
-.top-controls{
-    display:flex;
-    align-items:center;
-    gap:1rem;
-}
-
-.lang-pill{
-    display:flex;
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:2px;
-}
-
-.lang-btn{
-    background:transparent;
-    border:none;
-    padding:5px 10px;
-    font-size:.75rem;
-    font-weight:600;
-    cursor:pointer;
-    color:var(--text-muted);
-    border-radius:16px;
-}
-
-.lang-btn.active{
-    background:var(--primary);
-    color:white;
-}
-
-.menu-wrapper{
-    position:relative;
-}
-
-.menu-btn{
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:1.3rem;
-    cursor:pointer;
-    color:var(--text-main);
-}
-
-.dropdown-menu{
-    position:absolute;
-    right:0;
-    top:45px;
-    background:white;
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    width:240px;
-    display:none;
-    flex-direction:column;
-    overflow:hidden;
-    z-index:1000;
-}
-
-.dropdown-menu.active{
-    display:flex;
-}
-
-.dropdown-menu a,
-.dropdown-menu button{
-    padding:.75rem 1rem;
-    text-align:left;
-    background:white;
-    border:none;
-    font-size:.9rem;
-    color:var(--text-main);
-    text-decoration:none;
-    cursor:pointer;
-    width:100%;
-}
-
-.dropdown-menu a:hover,
-.dropdown-menu button:hover{
-    background:var(--bg-color);
-    color:var(--primary);
-}
-
-.profile-menu-item{
-    background:rgba(37,99,235,.08)!important;
-    font-weight:600;
-    color:var(--primary)!important;
-    border-bottom:1px solid var(--border)!important;
-}
-
-/* MAIN */
-
-main{
-    flex:1;
-    max-width:950px;
-    margin:2rem auto;
-    padding:0 1.5rem;
-    width:100%;
-}
-
-.search-section-box,
-.features-section,
-.profile-card-layout,
-.card{
-    background:white;
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:2rem;
-    box-shadow:0 4px 15px rgba(0,0,0,.03);
-    margin-bottom:2rem;
-}
-
-h1{
-    font-size:1.8rem;
-    margin-bottom:.5rem;
-}
-
-.subtitle{
-    color:var(--text-muted);
-    margin-bottom:1.5rem;
-    font-size:.95rem;
-}
-
-.search-container{
-    display:flex;
-    flex-direction:column;
-    gap:1rem;
-}
-
-.search-input-wrapper{
-    display:flex;
-    gap:.5rem;
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:6px;
-    width:100%;
-}
-
-.search-input{
-    flex:1;
-    border:none;
-    background:transparent;
-    padding:.5rem .75rem;
-    font-size:1rem;
-    outline:none;
-    min-width:0;
-}
-
-button{
-    font-family:inherit;
-}
-
-.search-btn{
-    background:var(--primary);
-    color:white;
-    border:none;
-    padding:.7rem 1.25rem;
-    border-radius:8px;
-    font-weight:600;
-    cursor:pointer;
-    white-space:nowrap;
-}
-
-.search-btn:hover{
-    background:var(--primary-dark);
-}
-
-.action-buttons-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:1rem;
-}
-
-.mode-action-btn{
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    padding:.9rem;
-    border-radius:8px;
-    font-weight:600;
-    font-size:.9rem;
-    cursor:pointer;
-    text-align:center;
-    color:var(--text-main);
-}
-
-.mode-action-btn:hover{
-    border-color:var(--primary);
-    color:var(--primary);
-}
-
-.loading-state{
-    display:none;
-    align-items:center;
-    justify-content:center;
-    gap:.75rem;
-    color:var(--primary);
-    font-weight:500;
-    margin-top:1rem;
-    padding:1rem;
-    background:rgba(37,99,235,.05);
-    border-radius:8px;
-}
-
-.spinner{
-    width:20px;
-    height:20px;
-    border:3px solid rgba(37,99,235,.2);
-    border-top-color:var(--primary);
-    border-radius:50%;
-    animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-    to{transform:rotate(360deg)}
-}
-
-/* RESULTS */
-
-.results-section{
-    display:none;
-}
-
-.results-section.active{
-    display:block;
-}
-
-.result-content-box{
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    padding:1.5rem;
-    border-radius:8px;
-    white-space:pre-wrap;
-    overflow-x:auto;
-}
-
-/* FEATURES */
-
-.features-section h2{
-    font-size:1.35rem;
-    margin-bottom:1rem;
-}
-
-.features-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:1.25rem;
-}
-
-.feature-item{
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    padding:1.25rem;
-    border-radius:10px;
-    border-left:4px solid var(--primary);
-}
-
-.feature-item h3{
-    font-size:1rem;
-    margin-bottom:.4rem;
-}
-
-.feature-item p{
-    font-size:.9rem;
-    color:var(--text-muted);
-}
-
-/* NOTIFICATION */
-
-.site-notification{
-    display:none;
-    background:#eff6ff;
-    border:1px solid #bfdbfe;
-    color:#1e40af;
-    padding:.85rem 1rem;
-    border-radius:8px;
-    font-size:.9rem;
-    margin-bottom:1rem;
-}
-
-.site-notification.active{
-    display:block;
-}
-
-.site-notification.error{
-    background:#fef2f2;
-    border-color:#fecaca;
-    color:#991b1b;
-}
-
-/* PROFILE */
-
-.profile-page-section{
-    display:none;
-}
-
-.profile-page-section.active{
-    display:block;
-}
-
-.profile-header-flex{
-    display:flex;
-    flex-direction:column;
-    gap:1.5rem;
-    margin-bottom:2rem;
-    border-bottom:1px solid var(--border);
-    padding-bottom:1.5rem;
-}
-
-.profile-top-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:1rem;
-}
-
-.profile-avatar-info{
-    display:flex;
-    align-items:center;
-    gap:1.25rem;
-}
-
-.profile-avatar-big{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    overflow:hidden;
-    border:2px solid var(--primary);
-}
-
-.profile-avatar-big img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.profile-field-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    padding:.9rem 1.25rem;
-    border-radius:8px;
-    margin-bottom:.75rem;
-}
-
-.edit-circle-btn{
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    background:white;
-    border:1px solid var(--border);
-    cursor:pointer;
-    color:var(--primary);
-}
-
-.inline-edit-box{
-    display:none;
-    background:white;
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:1rem;
-    margin-bottom:.75rem;
-}
-
-.inline-edit-box.active{
-    display:block;
-}
-
-.history-page-list{
-    list-style:none;
-    display:flex;
-    flex-direction:column;
-    gap:.75rem;
-    margin-top:1rem;
-}
-
-.history-page-item{
-    background:var(--bg-color);
-    border:1px solid var(--border);
-    padding:1rem;
-    border-radius:8px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    cursor:pointer;
-}
-
-/* MODAL */
-
-.modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.5);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:2000;
-    padding:1rem;
-}
-
-.modal-overlay.active{
-    display:flex;
-}
-
-.modal-card{
-    background:white;
-    border-radius:var(--radius);
-    padding:2rem;
-    width:100%;
-    max-width:400px;
-    position:relative;
-}
-
-.modal-close{
-    position:absolute;
-    top:1rem;
-    right:1rem;
-    background:none;
-    border:none;
-    font-size:1.4rem;
-    cursor:pointer;
-}
-
-.modal-title{
-    font-size:1.25rem;
-    font-weight:700;
-    margin-bottom:1.5rem;
-}
-
-.form-group{
-    margin-bottom:1rem;
-}
-
-.form-label{
-    display:block;
-    font-size:.85rem;
-    font-weight:600;
-    margin-bottom:.3rem;
-    color:var(--text-muted);
-}
-
-.form-input{
-    width:100%;
-    padding:.75rem;
-    border:1px solid var(--border);
-    border-radius:6px;
-    font-size:.95rem;
-    outline:none;
-}
-
-.form-input:focus{
-    border-color:var(--primary);
-}
-
-.modal-btn{
-    width:100%;
-    padding:.75rem;
-    background:var(--primary);
-    color:white;
-    border:none;
-    border-radius:6px;
-    font-weight:600;
-    cursor:pointer;
-    margin-top:.5rem;
-}
-
-.modal-switch{
-    text-align:center;
-    margin-top:1rem;
-    font-size:.85rem;
-    color:var(--text-muted);
-}
-
-.modal-switch a{
-    color:var(--primary);
-    cursor:pointer;
-    font-weight:600;
-}
-
-/* FOOTER */
-
-footer{
-    background:white;
-    border-top:1px solid var(--border);
-    padding:2rem 1.5rem;
-    margin-top:auto;
-}
-
-.footer-content{
-    max-width:950px;
-    margin:auto;
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:2rem;
-    margin-bottom:1.5rem;
-}
-
-.footer-col{
-    display:flex;
-    flex-direction:column;
-    gap:.5rem;
-}
-
-.footer-col a{
-    color:var(--text-muted);
-    text-decoration:none;
-    font-size:.9rem;
-}
-
-.footer-copy{
-    text-align:center;
-    font-size:.85rem;
-    color:var(--text-muted);
-    border-top:1px solid var(--border);
-    padding-top:1rem;
-}
-
-/* MOBILE */
-
-@media(max-width:650px){
-    header{
-        padding:1rem;
-    }
-
-    main{
-        padding:0 1rem;
-        margin:1rem auto;
-    }
-
-    .features-grid{
-        grid-template-columns:1fr;
-    }
-
-    .action-buttons-grid{
-        grid-template-columns:1fr;
-    }
-
-    .search-input-wrapper{
-        flex-direction:column;
-    }
-
-    .search-btn{
-        width:100%;
-    }
-
-    .top-controls{
-        gap:.4rem;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">UniView AI — Сервис поиска университетов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { font-weight: 700; font-size: 1.25rem; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .top-controls { display: flex; align-items: center; gap: 1rem; position: relative; }
+        
+        .lang-pill { display: flex; background: var(--bg-color); border: 1px solid var(--border); border-radius: 20px; padding: 2px; overflow: hidden; }
+        .lang-btn { background: transparent; border: none; padding: 4px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: var(--text-muted); border-radius: 16px; transition: all 0.2s; }
+        .lang-btn.active { background: var(--primary); color: white; }
+
+        .menu-wrapper { position: relative; }
+        .menu-btn { background: var(--bg-color); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; color: var(--text-main); }
+        .menu-btn:hover { background: var(--border); }
+        
+        .dropdown-menu { position: absolute; right: 0; top: 45px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.08); width: 240px; display: none; flex-direction: column; overflow: hidden; z-index: 101; }
+        .dropdown-menu.active { display: flex; }
+        .dropdown-menu a, .dropdown-menu button { padding: 0.75rem 1rem; text-align: left; background: none; border: none; font-size: 0.9rem; color: var(--text-main); text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .dropdown-menu a:hover, .dropdown-menu button:hover { background: var(--bg-color); color: var(--primary); }
+        .profile-menu-item { background: rgba(37, 99, 235, 0.08); font-weight: 600; color: var(--primary) !important; border-bottom: 1px solid var(--border); }
+
+        main { flex: 1; max-width: 950px; margin: 2rem auto; padding: 0 1.5rem; width: 100%; }
+        
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
+        .results-section { margin-top: 1rem; display: none; }
+        .results-section.active { display: block; }
+        .result-content-box { background: var(--bg-color); border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; color: var(--text-main); font-size: 0.95rem; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
+
+        .search-section-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-main); font-weight: 700; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .search-container { display: flex; flex-direction: column; gap: 1rem; }
+        .search-input-wrapper { display: flex; gap: 0.5rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 10px; padding: 6px; width: 100%; }
+        .search-input { flex: 1; border: none; background: transparent; padding: 0.5rem 0.75rem; font-size: 1rem; outline: none; width: 100%; }
+        .search-btn { background: var(--primary); color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+        .search-btn:hover { background: var(--primary-dark); }
+
+        .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .mode-action-btn { background: var(--bg-color); border: 1px solid var(--border); padding: 0.85rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-align: center; color: var(--text-main); transition: all 0.2s; }
+        .mode-action-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(37, 99, 235, 0.03); }
+
+        .loading-state { display: none; align-items: center; justify-content: center; gap: 0.75rem; color: var(--primary); font-weight: 500; margin-top: 1rem; padding: 1rem; background: rgba(37, 99, 235, 0.05); border-radius: 8px; }
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(37, 99, 235, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .features-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
+        .features-section h2 { font-size: 1.35rem; margin-bottom: 1rem; color: var(--text-main); }
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1rem; }
+        .feature-item { background: var(--bg-color); border: 1px solid var(--border); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--primary); }
+        .feature-item h3 { font-size: 1rem; color: var(--text-main); margin-bottom: 0.4rem; font-weight: 700; }
+        .feature-item p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+
+        .profile-page-section { display: none; }
+        .profile-page-section.active { display: block; }
+        .profile-card-layout { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .profile-header-flex { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; }
+        .profile-top-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        .profile-avatar-info { display: flex; align-items: center; gap: 1.25rem; }
+        .profile-avatar-big { width: 70px; height: 70px; border-radius: 50%; background: var(--border); overflow: hidden; border: 2px solid var(--primary); }
+        .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .profile-field-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); border: 1px solid var(--border); padding: 0.9rem 1.25rem; border-radius: 8px; margin-bottom: 0.75rem; position: relative; }
+        .edit-circle-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--primary); font-size: 0.85rem; font-weight: bold; transition: all 0.2s; }
+        .edit-circle-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .inline-edit-box { display: none; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .inline-edit-box.active { display: block; }
+
+        .history-page-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+        .history-page-item { background: var(--bg-color); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .history-page-item:hover { border-color: var(--primary); background: rgba(37, 99, 235, 0.02); }
+
+        .site-notification { display: none; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; }
+        .site-notification.active { display: flex; }
+        .site-notification.error { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--card-bg); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+        .modal-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-muted); }
+        .form-input { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; }
+        .form-input:focus { border-color: var(--primary); }
+        .modal-btn { width: 100%; padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+        .modal-btn:hover { background: var(--primary-dark); }
+        .modal-switch { text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); }
+        .modal-switch a { color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 600; }
+
+        footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 2rem 1.5rem; margin-top: auto; }
+        .footer-content { max-width: 950px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; margin-bottom: 1.5rem; }
+        .footer-col { display: flex; flex-direction: column; gap: 0.5rem; }
+        .footer-col a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .footer-col a:hover { color: var(--primary); }
+        .footer-copy { text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1rem; }
+
+        @media(max-width: 650px) {
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
 <body>
-
-<header>
-    <a href="https://st.mansur.cfd" class="logo">UniView AI</a>
-
-    <div class="top-controls">
-
-        <div class="lang-pill">
-            <button class="lang-btn active" onclick="changeLanguage('ru',this)">RU</button>
-            <button class="lang-btn" onclick="changeLanguage('kz',this)">KZ</button>
-            <button class="lang-btn" onclick="changeLanguage('en',this)">EN</button>
-        </div>
-
-        <div class="menu-wrapper">
-            <button class="menu-btn" onclick="toggleMenu()">⋮</button>
-
-            <div id="dropdownMenu" class="dropdown-menu">
-
-                <button onclick="openProfilePage()" class="profile-menu-item">
-                    Профиль
-                </button>
-
-                <a href="https://st.mansur.cfd">Главная</a>
-
-                <a href="https://sllven.github.io/SteppeTech/about">
-                    Подробнее о нас
-                </a>
-
-                <a href="https://sllven.github.io/SteppeTech/cc">
-                    Контакты
-                </a>
-
-                <a href="https://sllven.github.io/SteppeTech/faq">
-                    FAQ
-                </a>
-
+    <header>
+        <a href="https://st.mansur.cfd" class="logo">UniView AI</a>
+        <div class="top-controls">
+            <div class="lang-pill">
+                <button class="lang-btn active" onclick="changeLanguage('ru', this)">RU</button>
+                <button class="lang-btn" onclick="changeLanguage('kz', this)">KZ</button>
+                <button class="lang-btn" onclick="changeLanguage('en', this)">EN</button>
+            </div>
+            <div class="menu-wrapper">
+                <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+                <div id="dropdownMenu" class="dropdown-menu">
+                    <button onclick="openProfilePage()" class="profile-menu-item" id="menuProfileText">Профиль</button>
+                    <a href="https://st.mansur.cfd" id="menuHomeText">Главная</a>
+                    <a href="https://sllven.github.io/SteppeTech/about" id="menuAboutText">Подробнее о нас</a>
+                    <a href="https://sllven.github.io/SteppeTech/cc" id="menuContactsText">Контакты</a>
+                    <a href="https://sllven.github.io/SteppeTech/faq" id="menuFaqText">FAQ</a>
+                </div>
             </div>
         </div>
+    </header>
 
-    </div>
-</header>
+    <main>
+        <!-- СТРАНИЦА ПРОФИЛЯ -->
+        <div id="profilePageSection" class="profile-page-section">
+            <div class="profile-card-layout">
+                <div id="profileAlert" class="site-notification"></div>
 
-
-<main>
-
-<!-- PROFILE -->
-
-<div id="profilePageSection" class="profile-page-section">
-
-    <div class="profile-card-layout">
-
-        <div id="profileAlert" class="site-notification"></div>
-
-        <div class="profile-header-flex">
-
-            <div class="profile-top-row">
-
-                <div class="profile-avatar-info">
-
-                    <div class="profile-avatar-big">
-                        <img id="profileAvatarImg"
-                             src="https://via.placeholder.com/90"
-                             alt="Avatar">
+                <div class="profile-header-flex">
+                    <div class="profile-top-row">
+                        <div class="profile-avatar-info">
+                            <div class="profile-avatar-big">
+                                <img id="profileAvatarImg" src="https://via.placeholder.com/90" alt="Avatar">
+                            </div>
+                            <div>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Юзернейм</p>
+                                <h2 id="profUsername" style="font-size: 1.25rem; font-weight: 700;">username</h2>
+                            </div>
+                        </div>
+                        <button class="edit-circle-btn" onclick="toggleEditBox('editUserBox')" title="Изменить юзернейм">✏</button>
                     </div>
 
+                    <div id="editUserBox" class="inline-edit-box">
+                        <div class="form-group" style="margin-bottom: 0.5rem;">
+                            <label class="form-label">Новый юзернейм</label>
+                            <input type="text" id="newUsernameInput" class="form-input" placeholder="Введите новый юзернейм">
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="modal-btn" style="margin-top:0;" onclick="saveNewUsername()">Сохранить</button>
+                            <button class="modal-btn" style="margin-top:0; background:var(--text-muted);" onclick="toggleEditBox('editUserBox')">Отмена</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-field-row">
                     <div>
-                        <p style="font-size:.75rem;color:var(--text-muted);">
-                            ЮЗЕРНЕЙМ
-                        </p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Безопасность</p>
+                        <span id="profPasswordDisplay" style="font-weight: 600; font-size: 0.95rem;">Пароль: ******</span>
+                    </div>
+                    <button class="edit-circle-btn" onclick="toggleEditBox('editPassBox')" title="Изменить пароль">✏</button>
+                </div>
 
-                        <h2 id="profUsername">
-                            username
-                        </h2>
+                <div id="editPassBox" class="inline-edit-box">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label">Новый пароль</label>
+                        <input type="password" id="newPassInput" class="form-input" placeholder="Введите новый пароль">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="modal-btn" style="margin-top:0;" onclick="saveNewPassword()">Сохранить</button>
+                        <button class="modal-btn" style="margin-top:0; background:var(--text-muted);" onclick="toggleEditBox('editPassBox')">Отмена</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;" id="historyHeaderTitle">История поиска университетов</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;" id="historyHeaderSub">Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:</p>
+                    <ul id="historyPageList" class="history-page-list"></ul>
+                </div>
+
+                <button onclick="goHome()" class="search-btn" style="width: 100%; padding: 0.75rem;" id="backToSearchBtn">Вернуться к поиску</button>
+            </div>
+        </div>
+
+        <!-- ОСНОВНОЙ КОНТЕНТ -->
+        <div id="searchMainContent">
+            <div id="mainAlert" class="site-notification"></div>
+
+            <div id="resultsCard" class="card results-section">
+                <h2 id="resultTitle" style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);">Аналитика от ИИ:</h2>
+                <div id="resContent" class="result-content-box"></div>
+            </div>
+
+            <div class="search-section-box">
+                <h1 id="mainTitle">Поиск университетов через AI</h1>
+                <p id="mainSubtitle" class="subtitle">Введите название вуза, чтобы получить мгновенную аналитику для поступления.</p>
+                
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="uniInput" class="search-input" placeholder="Название университета (например: Назарбаев Университет, КазНУ)...">
+                        <button id="searchBtn" class="search-btn" onclick="handleSearch('1')">Найти</button>
                     </div>
 
+                    <div class="action-buttons-grid">
+                        <button class="mode-action-btn" onclick="handleSearch('1')">Быстрый срез</button>
+                        <button class="mode-action-btn" onclick="handleSearch('2')">Полная аналитика</button>
+                    </div>
                 </div>
 
-                <button class="edit-circle-btn"
-                        onclick="toggleEditBox('editUserBox')">
-                    ✏
-                </button>
-
+                <div id="loading" class="loading-state">
+                    <div class="spinner"></div>
+                    <span id="loadingText">Нейросеть собирает данные... Пожалуйста, подождите.</span>
+                </div>
             </div>
 
+            <div class="features-section">
+                <h2 id="featuresMainTitle">Почему абитуриенты выбирают нас?</h2>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem;" id="featuresMainSub">Сделайте осознанный выбор будущего университета без долгих поисков.</p>
+                
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <h3 id="feat1Title">Нейросетевая точность</h3>
+                        <p id="feat1Desc">Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3 id="feat2Title">Твой карьерный компас</h3>
+                        <p id="feat2Desc">Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3 id="feat3Title">Без воды и рекламы</h3>
+                        <p id="feat3Desc">Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3 id="feat4Title">Умный профиль</h3>
+                        <p id="feat4Desc">Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-            <div id="editUserBox" class="inline-edit-box">
-
+    <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            <div id="modalAlert" class="site-notification" style="margin-bottom: 1rem;"></div>
+            
+            <div id="loginFormContainer">
+                <div id="loginTitle" class="modal-title">Вход в аккаунт</div>
                 <div class="form-group">
-                    <label class="form-label">
-                        Новый юзернейм
-                    </label>
-
-                    <input
-                        type="text"
-                        id="newUsernameInput"
-                        class="form-input"
-                        placeholder="Введите новый юзернейм">
+                    <label class="form-label">Юзернейм</label>
+                    <input type="text" id="loginUser" class="form-input">
                 </div>
-
-                <button class="modal-btn"
-                        onclick="saveNewUsername()">
-                    Сохранить
-                </button>
-
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" id="loginPass" class="form-input">
+                </div>
+                <button class="modal-btn" onclick="handleLogin()">Войти</button>
+                <div class="modal-switch">
+                    <span>Нет аккаунта?</span> <a onclick="switchAuthTab('register')">Создать аккаунт</a>
+                </div>
             </div>
-
-        </div>
-
-
-        <div class="profile-field-row">
-
-            <div>
-                <p style="font-size:.75rem;color:var(--text-muted);">
-                    БЕЗОПАСНОСТЬ
-                </p>
-
-                <span id="profPasswordDisplay">
-                    Пароль: ******
-                </span>
+            <div id="registerFormContainer" style="display: none;">
+                <div id="regTitle" class="modal-title">Создание аккаунта</div>
+                <div class="form-group">
+                    <label class="form-label">Юзернейм</label>
+                    <input type="text" id="regUser" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" id="regPass" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Подтверждение пароля</label>
+                    <input type="password" id="regConfirmPass" class="form-input">
+                </div>
+                <button class="modal-btn" onclick="handleRegister()">Зарегистрироваться</button>
+                <div class="modal-switch">
+                    <span>Уже есть аккаунт?</span> <a onclick="switchAuthTab('login')">Войти</a>
+                </div>
             </div>
-
-            <button class="edit-circle-btn"
-                    onclick="toggleEditBox('editPassBox')">
-                ✏
-            </button>
-
         </div>
-
-
-        <div id="editPassBox" class="inline-edit-box">
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Новый пароль
-                </label>
-
-                <input
-                    type="password"
-                    id="newPassInput"
-                    class="form-input"
-                    placeholder="Введите новый пароль">
-
-            </div>
-
-            <button class="modal-btn"
-                    onclick="saveNewPassword()">
-                Сохранить
-            </button>
-
-        </div>
-
-
-        <div style="margin-top:2rem;margin-bottom:2rem;">
-
-            <h3 id="historyHeaderTitle">
-                История поиска университетов
-            </h3>
-
-            <p id="historyHeaderSub"
-               style="color:var(--text-muted);font-size:.85rem;margin-top:.5rem;">
-                Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:
-            </p>
-
-            <ul id="historyPageList"
-                class="history-page-list">
-            </ul>
-
-        </div>
-
-
-        <button
-            onclick="goHome()"
-            class="search-btn"
-            style="width:100%;">
-
-            Вернуться к поиску
-
-        </button>
-
     </div>
 
-</div>
-
-
-<!-- MAIN SEARCH -->
-
-<div id="searchMainContent">
-
-    <div id="mainAlert"
-         class="site-notification">
-    </div>
-
-
-    <div id="resultsCard"
-         class="card results-section">
-
-        <h2 style="font-size:1.25rem;margin-bottom:.75rem;">
-            Аналитика от ИИ:
-        </h2>
-
-        <div id="resContent"
-             class="result-content-box">
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <a href="https://sllven.github.io/SteppeTech/about" id="footerAbout">Подробнее о нас</a>
+                <a href="https://sllven.github.io/SteppeTech/pp" id="footerPp">Политика Конфиденциальности</a>
+                <a href="https://sllven.github.io/SteppeTech/t" id="footerT">Условия Пользования</a>
+            </div>
+            <div class="footer-col" style="align-items: flex-end;">
+                <a href="https://sllven.github.io/SteppeTech/faq" id="footerFaq">FAQ</a>
+                <a href="https://sllven.github.io/SteppeTech/cc" id="footerCc">Контакты</a>
+            </div>
         </div>
-
-    </div>
-
-
-    <div class="search-section-box">
-
-        <h1 id="mainTitle">
-            Поиск университетов через AI
-        </h1>
-
-        <p id="mainSubtitle"
-           class="subtitle">
-            Введите название вуза, чтобы получить мгновенную аналитику для поступления.
-        </p>
-
-
-        <div class="search-container">
-
-            <div class="search-input-wrapper">
-
-                <input
-                    type="text"
-                    id="uniInput"
-                    class="search-input"
-                    placeholder="Название университета (например: Назарбаев Университет, КазНУ)...">
-
-                <button
-                    id="searchBtn"
-                    class="search-btn"
-                    onclick="handleSearch('1')">
-
-                    Найти
-
-                </button>
-
-            </div>
-
-
-            <div class="action-buttons-grid">
-
-                <button
-                    class="mode-action-btn"
-                    onclick="handleSearch('1')">
-
-                    Быстрый срез
-
-                </button>
-
-                <button
-                    class="mode-action-btn"
-                    onclick="handleSearch('2')">
-
-                    Полная аналитика
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div id="loading"
-             class="loading-state">
-
-            <div class="spinner"></div>
-
-            <span id="loadingText">
-                Нейросеть собирает данные... Пожалуйста, подождите.
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <!-- FEATURES -->
-
-    <div class="features-section">
-
-        <h2 id="featuresMainTitle">
-            Почему абитуриенты выбирают нас?
-        </h2>
-
-        <p id="featuresMainSub"
-           style="color:var(--text-muted);margin-bottom:1.5rem;">
-
-            Сделайте осознанный выбор будущего университета без долгих поисков.
-
-        </p>
-
-
-        <div class="features-grid">
-
-            <div class="feature-item">
-
-                <h3 id="feat1Title">
-                    Нейросетевая точность
-                </h3>
-
-                <p id="feat1Desc">
-                    Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.
-                </p>
-
-            </div>
-
-
-            <div class="feature-item">
-
-                <h3 id="feat2Title">
-                    Твой карьерный компас
-                </h3>
-
-                <p id="feat2Desc">
-                    Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.
-                </p>
-
-            </div>
-
-
-            <div class="feature-item">
-
-                <h3 id="feat3Title">
-                    Без воды и рекламы
-                </h3>
-
-                <p id="feat3Desc">
-                    Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.
-                </p>
-
-            </div>
-
-
-            <div class="feature-item">
-
-                <h3 id="feat4Title">
-                    Умный профиль
-                </h3>
-
-                <p id="feat4Desc">
-                    Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</main>
-
-
-<!-- AUTH MODAL -->
-
-<div id="authModal"
-     class="modal-overlay">
-
-    <div class="modal-card">
-
-        <button
-            class="modal-close"
-            onclick="closeAuthModal()">
-            ×
-        </button>
-
-
-        <div id="modalAlert"
-             class="site-notification">
-        </div>
-
-
-        <!-- LOGIN -->
-
-        <div id="loginFormContainer">
-
-            <div class="modal-title">
-                Вход в аккаунт
-            </div>
-
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Юзернейм
-                </label>
-
-                <input
-                    type="text"
-                    id="loginUser"
-                    class="form-input">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Пароль
-                </label>
-
-                <input
-                    type="password"
-                    id="loginPass"
-                    class="form-input">
-
-            </div>
-
-
-            <button
-                class="modal-btn"
-                onclick="handleLogin()">
-
-                Войти
-
-            </button>
-
-
-            <div class="modal-switch">
-
-                Нет аккаунта?
-
-                <a onclick="switchAuthTab('register')">
-                    Создать аккаунт
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <!-- REGISTER -->
-
-        <div id="registerFormContainer"
-             style="display:none;">
-
-            <div class="modal-title">
-                Создание аккаунта
-            </div>
-
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Юзернейм
-                </label>
-
-                <input
-                    type="text"
-                    id="regUser"
-                    class="form-input">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Пароль
-                </label>
-
-                <input
-                    type="password"
-                    id="regPass"
-                    class="form-input">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Подтверждение пароля
-                </label>
-
-                <input
-                    type="password"
-                    id="regConfirmPass"
-                    class="form-input">
-
-            </div>
-
-
-            <button
-                class="modal-btn"
-                onclick="handleRegister()">
-
-                Зарегистрироваться
-
-            </button>
-
-
-            <div class="modal-switch">
-
-                Уже есть аккаунт?
-
-                <a onclick="switchAuthTab('login')">
-                    Войти
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- FOOTER -->
-
-<footer>
-
-    <div class="footer-content">
-
-        <div class="footer-col">
-
-            <a href="https://sllven.github.io/SteppeTech/about">
-                Подробнее о нас
-            </a>
-
-            <a href="https://sllven.github.io/SteppeTech/pp">
-                Политика Конфиденциальности
-            </a>
-
-            <a href="https://sllven.github.io/SteppeTech/t">
-                Условия Пользования
-            </a>
-
-        </div>
-
-
-        <div class="footer-col">
-
-            <a href="https://sllven.github.io/SteppeTech/faq">
-                FAQ
-            </a>
-
-            <a href="https://sllven.github.io/SteppeTech/cc">
-                Контакты
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <div class="footer-copy">
-        © 2026 UniView AI. Все права защищены.
-    </div>
-
-</footer>
-
-
-<script>
-
-/* =========================================================
-   GEMINI API
-   ========================================================= */
-
-const GEMINI_API_KEY = "";
-
-
-/* =========================================================
-   ПЕРЕВОДЫ
-   ========================================================= */
-
-const translations = {
-
-    ru:{
-        title:"UniView AI — Сервис поиска университетов",
-        mainTitle:"Поиск университетов через AI",
-        mainSubtitle:"Введите название вуза, чтобы получить мгновенную аналитику для поступления.",
-        searchBtn:"Найти",
-        loadingText:"Нейросеть собирает данные... Пожалуйста, подождите.",
-        placeholder:"Название университета...",
-
-        menuProfile:"Профиль",
-        menuHome:"Главная",
-        menuAbout:"Подробнее о нас",
-        menuContacts:"Контакты",
-        menuFaq:"FAQ",
-
-        historyTitle:"История поиска университетов",
-        historySub:"Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:",
-        backBtn:"Вернуться к поиску",
-
-        featuresMainTitle:"Почему абитуриенты выбирают нас?",
-        featuresMainSub:"Сделайте осознанный выбор будущего университета без долгих поисков.",
-
-        feat1Title:"Нейросетевая точность",
-        feat1Desc:"Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.",
-
-        feat2Title:"Твой карьерный компас",
-        feat2Desc:"Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.",
-
-        feat3Title:"Без воды и рекламы",
-        feat3Desc:"Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.",
-
-        feat4Title:"Умный профиль",
-        feat4Desc:"Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке."
-    },
-
-    kz:{
-        title:"UniView AI — Университеттерді іздеу қызметі",
-        mainTitle:"AI арқылы университеттерді іздеу",
-        mainSubtitle:"Оқуға түсу үшін лезде аналитика алу мақсатында ЖОО атауын енгізіңіз.",
-        searchBtn:"Іздеу",
-        loadingText:"Нейрожелі деректерді жинауда... Күте тұрыңыз.",
-        placeholder:"Университет атауы...",
-
-        menuProfile:"Профиль",
-        menuHome:"Басты бет",
-        menuAbout:"Біз туралы",
-        menuContacts:"Байланыс",
-        menuFaq:"FAQ",
-
-        historyTitle:"Университеттерді іздеу тарихы",
-        historySub:"Тізімнен университетті басып, ақпаратты қайта сұраңыз:",
-        backBtn:"Іздеуге оралу",
-
-        featuresMainTitle:"Талапкерлер неге бізді таңдайды?",
-        featuresMainSub:"Ұзақ ізденіссіз болашақ университетіңізді саналы түрде таңдаңыз.",
-
-        feat1Title:"Нейрожелілік дәлдік",
-        feat1Desc:"Ұзақ іздеуді ұмытыңыз. ЖИ ондаған дереккөздерден нақты фактілерді жинап береді.",
-
-        feat2Title:"Сенің мансаптық компасың",
-        feat2Desc:"Біз тек шекті балдарды ғана емес, гранттарды, мықты факультеттерді және жұмысқа орналасу мүмкіндіктерін көрсетеміз.",
-
-        feat3Title:"Жарнамасыз, тек фактілер",
-        feat3Desc:"ЖОО-лардың жарнамалық баннерлері жоқ. Тек шешім қабылдауға арналған адал әрі құрылымдық аналитика.",
-
-        feat4Title:"Ақылды профиль",
-        feat4Desc:"Университеттерді салыстырыңыз, іздеу тарихын сақтаңыз және өзіңізге ыңғайлы тілде кез келген уақытта қайта оралыңыз."
-    },
-
-    en:{
-        title:"UniView AI — University Search Service",
-        mainTitle:"University Search via AI",
-        mainSubtitle:"Enter the university name to get instant analytics for your admission.",
-        searchBtn:"Search",
-        loadingText:"Neural network is gathering data... Please wait.",
-        placeholder:"University name...",
-
-        menuProfile:"Profile",
-        menuHome:"Home",
-        menuAbout:"About Us",
-        menuContacts:"Contacts",
-        menuFaq:"FAQ",
-
-        historyTitle:"University Search History",
-        historySub:"Click on a university from the list to instantly query live info:",
-        backBtn:"Back to Search",
-
-        featuresMainTitle:"Why do applicants choose us?",
-        featuresMainSub:"Make an informed choice about your future university without endless searching.",
-
-        feat1Title:"Neural Network Accuracy",
-        feat1Desc:"Forget endless googling. AI instantly gathers data from dozens of sources, giving you only the facts.",
-
-        feat2Title:"Your Career Compass",
-        feat2Desc:"We show more than passing scores: grants, top faculties, and future employment prospects.",
-
-        feat3Title:"No Fluff, No Ads",
-        feat3Desc:"No promotional university banners. Only honest, structured, and transparent analytics for your decision.",
-
-        feat4Title:"Smart Profile",
-        feat4Desc:"Compare universities, save your search history, and return to your research anytime in your preferred language."
-    }
-
-};
-
-
-let currentLang="ru";
-
-
-/* =========================================================
-   ЯЗЫК
-   ========================================================= */
-
-function changeLanguage(lang,btn){
-
-    currentLang=lang;
-
-    document.querySelectorAll(".lang-btn").forEach(function(b){
-        b.classList.remove("active");
-    });
-
-    if(btn){
-        btn.classList.add("active");
-    }
-
-    const t=translations[lang];
-
-    document.title=t.title;
-
-    document.getElementById("mainTitle").textContent=t.mainTitle;
-    document.getElementById("mainSubtitle").textContent=t.mainSubtitle;
-    document.getElementById("searchBtn").textContent=t.searchBtn;
-    document.getElementById("loadingText").textContent=t.loadingText;
-    document.getElementById("uniInput").placeholder=t.placeholder;
-
-    const links=document.querySelectorAll("#dropdownMenu a");
-
-    document.querySelector(".profile-menu-item").textContent=t.menuProfile;
-
-    if(links.length>=4){
-        links[0].textContent=t.menuHome;
-        links[1].textContent=t.menuAbout;
-        links[2].textContent=t.menuContacts;
-        links[3].textContent=t.menuFaq;
-    }
-
-    document.getElementById("historyHeaderTitle").textContent=t.historyTitle;
-    document.getElementById("historyHeaderSub").textContent=t.historySub;
-
-    document.getElementById("featuresMainTitle").textContent=t.featuresMainTitle;
-    document.getElementById("featuresMainSub").textContent=t.featuresMainSub;
-
-    document.getElementById("feat1Title").textContent=t.feat1Title;
-    document.getElementById("feat1Desc").textContent=t.feat1Desc;
-
-    document.getElementById("feat2Title").textContent=t.feat2Title;
-    document.getElementById("feat2Desc").textContent=t.feat2Desc;
-
-    document.getElementById("feat3Title").textContent=t.feat3Title;
-    document.getElementById("feat3Desc").textContent=t.feat3Desc;
-
-    document.getElementById("feat4Title").textContent=t.feat4Title;
-    document.getElementById("feat4Desc").textContent=t.feat4Desc;
-}
-
-
-/* =========================================================
-   МЕНЮ
-   ========================================================= */
-
-function toggleMenu(){
-
-    const menu=document.getElementById("dropdownMenu");
-
-    menu.classList.toggle("active");
-}
-
-
-document.addEventListener("click",function(event){
-
-    const wrapper=document.querySelector(".menu-wrapper");
-
-    if(wrapper && !wrapper.contains(event.target)){
-
-        document.getElementById("dropdownMenu")
-            .classList.remove("active");
-
-    }
-
-});
-
-
-/* =========================================================
-   УВЕДОМЛЕНИЯ
-   ========================================================= */
-
-function showSiteAlert(elementId,message,isError=false){
-
-    const element=document.getElementById(elementId);
-
-    if(!element)return;
-
-    element.textContent=message;
-
-    element.className=
-        "site-notification active "+
-        (isError ? "error":"");
-
-    setTimeout(function(){
-
-        element.classList.remove("active");
-
-    },5000);
-}
-
-
-/* =========================================================
-   USER
-   ========================================================= */
-
-let currentUser=null;
-
-try{
-
-    currentUser=
-        JSON.parse(
-            localStorage.getItem("uniview_current_user")
-        ) || null;
-
-}catch(e){
-
-    currentUser=null;
-
-}
-
-
-/* =========================================================
-   PROFILE
-   ========================================================= */
-
-function openProfilePage(){
-
-    toggleMenu();
-
-    if(!currentUser){
-
-        document
-            .getElementById("authModal")
-            .classList.add("active");
-
-        return;
-    }
-
-    renderProfilePageData();
-
-    document
-        .getElementById("searchMainContent")
-        .style.display="none";
-
-    document
-        .getElementById("profilePageSection")
-        .classList.add("active");
-}
-
-
-function goHome(){
-
-    document
-        .getElementById("profilePageSection")
-        .classList.remove("active");
-
-    document
-        .getElementById("searchMainContent")
-        .style.display="block";
-}
-
-
-/* =========================================================
-   AUTH
-   ========================================================= */
-
-function closeAuthModal(){
-
-    document
-        .getElementById("authModal")
-        .classList.remove("active");
-}
-
-
-function switchAuthTab(tab){
-
-    if(tab==="register"){
-
-        document
-            .getElementById("loginFormContainer")
-            .style.display="none";
-
-        document
-            .getElementById("registerFormContainer")
-            .style.display="block";
-
-    }else{
-
-        document
-            .getElementById("registerFormContainer")
-            .style.display="none";
-
-        document
-            .getElementById("loginFormContainer")
-            .style.display="block";
-    }
-
-}
-
-
-/* =========================================================
-   РЕДАКТИРОВАНИЕ
-   ========================================================= */
-
-function toggleEditBox(id){
-
-    const box=document.getElementById(id);
-
-    if(box){
-        box.classList.toggle("active");
-    }
-
-}
-
-
-function saveNewUsername(){
-
-    const input=document.getElementById("newUsernameInput");
-
-    const newName=input.value.trim();
-
-    if(!newName){
-
-        showSiteAlert(
-            "profileAlert",
-            "Введите новый юзернейм",
-            true
-        );
-
-        return;
-    }
-
-    currentUser.username=newName;
-
-    localStorage.setItem(
-        "uniview_current_user",
-        JSON.stringify(currentUser)
-    );
-
-    document.getElementById("profUsername")
-        .textContent=newName;
-
-    toggleEditBox("editUserBox");
-
-    showSiteAlert(
-        "profileAlert",
-        "Юзернейм успешно обновлен!"
-    );
-}
-
-
-function saveNewPassword(){
-
-    const pass=
-        document.getElementById("newPassInput").value;
-
-    if(!pass){
-
-        showSiteAlert(
-            "profileAlert",
-            "Введите новый пароль",
-            true
-        );
-
-        return;
-    }
-
-    toggleEditBox("editPassBox");
-
-    showSiteAlert(
-        "profileAlert",
-        "Пароль успешно изменен!"
-    );
-}
-
-
-/* =========================================================
-   REGISTER
-   ========================================================= */
-
-function handleRegister(){
-
-    const user=
-        document.getElementById("regUser")
-        .value.trim();
-
-    const pass=
-        document.getElementById("regPass")
-        .value;
-
-    const confirmPass=
-        document.getElementById("regConfirmPass")
-        .value;
-
-    if(!user || !pass){
-
-        showSiteAlert(
-            "modalAlert",
-            "Заполните все поля",
-            true
-        );
-
-        return;
-    }
-
-    if(pass!==confirmPass){
-
-        showSiteAlert(
-            "modalAlert",
-            "Пароли не совпадают",
-            true
-        );
-
-        return;
-    }
-
-    currentUser={
-        username:user,
-        avatar:"https://via.placeholder.com/90"
-    };
-
-    localStorage.setItem(
-        "uniview_current_user",
-        JSON.stringify(currentUser)
-    );
-
-    closeAuthModal();
-
-    openProfilePage();
-}
-
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-function handleLogin(){
-
-    const user=
-        document.getElementById("loginUser")
-        .value.trim();
-
-    if(!user){
-
-        showSiteAlert(
-            "modalAlert",
-            "Введите юзернейм",
-            true
-        );
-
-        return;
-    }
-
-    currentUser={
-        username:user,
-        avatar:"https://via.placeholder.com/90"
-    };
-
-    localStorage.setItem(
-        "uniview_current_user",
-        JSON.stringify(currentUser)
-    );
-
-    closeAuthModal();
-
-    openProfilePage();
-}
-
-
-/* =========================================================
-   PROFILE DATA
-   ========================================================= */
-
-function renderProfilePageData(){
-
-    if(!currentUser)return;
-
-    document.getElementById("profUsername")
-        .textContent=currentUser.username;
-
-    document.getElementById("profileAvatarImg")
-        .src=currentUser.avatar;
-
-    let history=[];
-
-    try{
-
-        history=
-            JSON.parse(
-                localStorage.getItem(
-                    "uniview_history_"+currentUser.username
-                )
-            ) || [];
-
-    }catch(e){
-
-        history=[];
-
-    }
-
-    const list=
-        document.getElementById("historyPageList");
-
-    list.innerHTML="";
-
-    if(history.length===0){
-
-        const li=document.createElement("li");
-
-        li.className="history-page-item";
-
-        li.style.cursor="default";
-        li.style.color="var(--text-muted)";
-
-        li.textContent="История поиска пуста";
-
-        list.appendChild(li);
-
-        return;
-    }
-
-
-    history.forEach(function(uniName){
-
-        const li=document.createElement("li");
-
-        li.className="history-page-item";
-
-        li.innerHTML=
-            "<span>"+
-            escapeHTML(uniName)+
-            "</span>"+
-            "<span style='color:var(--primary);font-weight:600'>"+
-            "Запросить инфо →"+
-            "</span>";
-
-        li.onclick=function(){
-
-            goHome();
-
-            document.getElementById("uniInput")
-                .value=uniName;
-
-            handleSearch("1");
-
+        <div class="footer-copy">© 2026 UniView AI. Все права защищены.</div>
+    </footer>
+
+    <script>
+        // =====================================================================
+        // ВСТАВЬТЕ ВАШ КЛЮЧ ФОРМАТА AQ. В КАВЫЧКИ НИЖЕ
+        // =====================================================================
+        const GEMINI_API_KEY = "AQ.Ab8RN6JpyasaRj7-88Mxxx5EMeyXx6NKCeyp4UWQmU53u3xkGA"; // <--- Ваш ключ здесь
+        // =====================================================================
+
+        const translations = {
+            ru: {
+                title: "UniView AI — Сервис поиска университетов",
+                mainTitle: "Поиск университетов через AI",
+                mainSubtitle: "Введите название вуза, чтобы получить мгновенную аналитику для поступления.",
+                searchBtn: "Найти",
+                loadingText: "Нейросеть собирает данные... Пожалуйста, подождите.",
+                placeholder: "Название университета...",
+                menuProfile: "Профиль", menuHome: "Главная", menuAbout: "Подробнее о нас", menuContacts: "Контакты", menuFaq: "FAQ",
+                fAbout: "Подробнее о нас", fPp: "Политика Конфиденциальности", fT: "Условия Пользования", fFaq: "FAQ", fCc: "Контакты",
+                historyTitle: "История поиска университетов", historySub: "Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:",
+                backBtn: "Вернуться к поиску",
+                
+                featuresMainTitle: "Почему абитуриенты выбирают нас?",
+                featuresMainSub: "Сделайте осознанный выбор будущего университета без долгих поисков.",
+                feat1Title: "Нейросетевая точность",
+                feat1Desc: "Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.",
+                feat2Title: "Твой карьерный компас",
+                feat2Desc: "Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.",
+                feat3Title: "Без воды и рекламы",
+                feat3Desc: "Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.",
+                feat4Title: "Умный профиль",
+                feat4Desc: "Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке."
+            },
+            kz: {
+                title: "UniView AI — Университеттерді іздеу қызметі",
+                mainTitle: "AI арқылы университеттерді іздеу",
+                mainSubtitle: "Оқуға түсу үшін лезде аналитика алу мақсатында ЖОО атауын енгізіңіз.",
+                searchBtn: "Іздеу",
+                loadingText: "Нейрожелі деректерді жинауда... Күте тұрыңыз.",
+                placeholder: "Университет атауы...",
+                menuProfile: "Профиль", menuHome: "Басты бет", menuAbout: "Біз туралы", menuContacts: "Байланыс", menuFaq: "FAQ",
+                fAbout: "Біз туралы", fPp: "Құпиялылық саясаты", fT: "Пайдалану шарттары", fFaq: "FAQ", fCc: "Байланыс",
+                historyTitle: "Университеттерді іздеу тарихы", historySub: "Тізімнен университет пен атауды басып, ақпаратты қайта сұраңыз:",
+                backBtn: "Іздеуге оралу",
+                
+                featuresMainTitle: "Талапкерлер неге бізді таңдайды?",
+                featuresMainSub: "Ұзақ ізденіссіз болашақ университетіңізді саналы түрде таңдаңыз.",
+                feat1Title: "Нейрожелілік дәлдік",
+                feat1Desc: "Ұзақ іздеуді ұмытыңыз. ЖИ ондаған дереккөздерден тек нақты фактілерді жинап береді.",
+                feat2Title: "Сенің мансаптық компасың",
+                feat2Desc: "Біз тек шекті балдарды ғана емес, гранттарды, мықты факультеттерді және жұмысқа орналасу мүмкіндіктерін көрсетеміз.",
+                feat3Title: "Жарнамасыз, тек фактілер",
+                feat3Desc: "ЖОО-лардың жарнамалық баннерлері жоқ. Тек шешім қабылдауға арналған адал әрі құрылымдық аналитика.",
+                feat4Title: "Ақылды профиль",
+                feat4Desc: "Университеттерді салыстырыңыз, іздеу тарихын сақтаңыз және өзіңізге ыңғайлы тілде кез келген уақытта қайта оралыңыз."
+            },
+            en: {
+                title: "UniView AI — University Search Service",
+                mainTitle: "University Search via AI",
+                mainSubtitle: "Enter the university name to get instant analytics for your admission.",
+                searchBtn: "Search",
+                loadingText: "Neural network is gathering data... Please wait.",
+                placeholder: "University name...",
+                menuProfile: "Profile", menuHome: "Home", menuAbout: "About Us", menuContacts: "Contacts", menuFaq: "FAQ",
+                fAbout: "About Us", fPp: "Privacy Policy", fT: "Terms of Use", fFaq: "FAQ", fCc: "Contacts",
+                historyTitle: "University Search History", historySub: "Click on a university from the list to instantly query live info:",
+                backBtn: "Back to Search",
+                
+                featuresMainTitle: "Why do applicants choose us?",
+                featuresMainSub: "Make an informed choice about your future university without endless searching.",
+                feat1Title: "Neural Network Accuracy",
+                feat1Desc: "Forget endless googling. AI instantly gathers data from dozens of sources, giving you only the facts.",
+                feat2Title: "Your Career Compass",
+                feat2Desc: "We show more than passing scores: grants, top faculties, and future employment prospects.",
+                feat3Title: "No Fluff, No Ads",
+                feat3Desc: "No promotional university banners. Only honest, structured, and transparent analytics for your decision.",
+                feat4Title: "Smart Profile",
+                feat4Desc: "Compare universities, save your search history, and return to your research anytime in your preferred language."
+            }
         };
 
-        list.appendChild(li);
+        let currentLang = 'ru';
 
-    });
+        function changeLanguage(lang, btn) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-}
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('pageTitle').innerText = t.title;
+            document.getElementById('mainTitle').innerText = t.mainTitle;
+            document.getElementById('mainSubtitle').innerText = t.mainSubtitle;
+            document.getElementById('searchBtn').innerText = t.searchBtn;
+            document.getElementById('loadingText').innerText = t.loadingText;
+            document.getElementById('uniInput').placeholder = t.placeholder;
 
+            document.getElementById('menuProfileText').innerText = t.menuProfile;
+            document.getElementById('menuHomeText').innerText = t.menuHome;
+            document.getElementById('menuAboutText').innerText = t.menuAbout;
+            document.getElementById('menuContactsText').innerText = t.menuContacts;
+            document.getElementById('menuFaqText').innerText = t.menuFaq;
 
-/* =========================================================
-   Защита вывода
-   ========================================================= */
+            document.getElementById('footerAbout').innerText = t.fAbout;
+            document.getElementById('footerPp').innerText = t.fPp;
+            document.getElementById('footerT').innerText = t.fT;
+            document.getElementById('footerFaq').innerText = t.fFaq;
+            document.getElementById('footerCc').innerText = t.fCc;
 
-function escapeHTML(text){
+            document.getElementById('historyHeaderTitle').innerText = t.historyTitle;
+            document.getElementById('historyHeaderSub').innerText = t.historySub;
+            document.getElementById('backToSearchBtn').innerText = t.backBtn;
 
-    const div=document.createElement("div");
-
-    div.textContent=text;
-
-    return div.innerHTML;
-}
-
-
-/* =========================================================
-   GEMINI
-   ========================================================= */
-
-async function handleSearch(mode){
-
-    const input=
-        document.getElementById("uniInput");
-
-    const loading=
-        document.getElementById("loading");
-
-    const resultsCard=
-        document.getElementById("resultsCard");
-
-    const resContent=
-        document.getElementById("resContent");
-
-    const query=input.value.trim();
-
-    if(!query){
-
-        showSiteAlert(
-            "mainAlert",
-            "Введите название университета",
-            true
-        );
-
-        return;
-    }
-
-
-    /*
-       Если API ключ не указан,
-       интерфейс всё равно работает.
-    */
-
-    if(!GEMINI_API_KEY){
-
-        showSiteAlert(
-            "mainAlert",
-            "API-ключ Gemini пока не указан. Добавьте его в переменную GEMINI_API_KEY.",
-            true
-        );
-
-        return;
-    }
-
-
-    loading.style.display="flex";
-
-    resultsCard.classList.remove("active");
-
-
-    /* HISTORY */
-
-    if(currentUser){
-
-        const key=
-            "uniview_history_"+
-            currentUser.username;
-
-        let history=[];
-
-        try{
-
-            history=
-                JSON.parse(
-                    localStorage.getItem(key)
-                ) || [];
-
-        }catch(e){
-
-            history=[];
-
+            document.getElementById('featuresMainTitle').innerText = t.featuresMainTitle;
+            document.getElementById('featuresMainSub').innerText = t.featuresMainSub;
+            document.getElementById('feat1Title').innerText = t.feat1Title;
+            document.getElementById('feat1Desc').innerText = t.feat1Desc;
+            document.getElementById('feat2Title').innerText = t.feat2Title;
+            document.getElementById('feat2Desc').innerText = t.feat2Desc;
+            document.getElementById('feat3Title').innerText = t.feat3Title;
+            document.getElementById('feat3Desc').innerText = t.feat3Desc;
+            document.getElementById('feat4Title').innerText = t.feat4Title;
+            document.getElementById('feat4Desc').innerText = t.feat4Desc;
         }
 
-        if(!history.includes(query)){
-
-            history.unshift(query);
-
-            localStorage.setItem(
-                key,
-                JSON.stringify(history)
-            );
-
+        function toggleMenu() {
+            document.getElementById('dropdownMenu').classList.toggle('active');
         }
 
-    }
-
-
-    const promptText=
-`Сделай подробную аналитику для абитуриента по университету: "${query}".
-
-Формат ответа:
-${
-mode==="2"
-?
-"Полная детальная аналитика: факультеты, проходные баллы, гранты, условия проживания, стоимость обучения и трудоустройство."
-:
-"Быстрый экспертный срез: основные показатели, гранты, проходной балл и особенности."
-}
-
-Отвечай структурировано на языке:
-${
-currentLang==="kz"
-?
-"казахском"
-:
-currentLang==="en"
-?
-"английском"
-:
-"русском"
-}.
-
-Если университет не существует, так и скажи.`;
-
-
-    try{
-
-        const response=
-            await fetch(
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
-                {
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json",
-
-                        "x-goog-api-key":
-                            GEMINI_API_KEY
-                    },
-
-                    body:JSON.stringify({
-
-                        contents:[
-
-                            {
-                                parts:[
-                                    {
-                                        text:promptText
-                                    }
-                                ]
-                            }
-
-                        ]
-
-                    })
-                }
-            );
-
-
-        if(!response.ok){
-
-            const errorText=
-                await response.text();
-
-            throw new Error(
-                "API Error "+
-                response.status+
-                ": "+
-                errorText
-            );
-
+        function showSiteAlert(elementId, message, isError = false) {
+            const alertBox = document.getElementById(elementId);
+            alertBox.innerText = message;
+            alertBox.className = "site-notification active " + (isError ? "error" : "");
+            setTimeout(() => { alertBox.classList.remove('active'); }, 5000);
         }
 
+        let currentUser = JSON.parse(localStorage.getItem('uniview_current_user')) || null;
 
-        const data=
-            await response.json();
-
-
-        const aiResponse=
-            data
-            .candidates?.[0]
-            ?.content?.parts?.[0]
-            ?.text
-            ||
-            "Не удалось получить ответ от нейросети.";
-
-
-        loading.style.display="none";
-
-        resultsCard.classList.add("active");
-
-        resContent.textContent=aiResponse;
-
-
-    }catch(error){
-
-        loading.style.display="none";
-
-        showSiteAlert(
-            "mainAlert",
-            "Сбой при обращении к нейросети: "+
-            error.message,
-            true
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   ENTER В ПОИСКЕ
-   ========================================================= */
-
-document.addEventListener("DOMContentLoaded",function(){
-
-    const input=
-        document.getElementById("uniInput");
-
-    if(input){
-
-        input.addEventListener(
-            "keydown",
-            function(event){
-
-                if(event.key==="Enter"){
-
-                    handleSearch("1");
-
-                }
-
+        function openProfilePage() {
+            toggleMenu();
+            if (!currentUser) {
+                document.getElementById('authModal').classList.add('active');
+            } else {
+                renderProfilePageData();
+                document.getElementById('searchMainContent').style.display = 'none';
+                document.getElementById('profilePageSection').classList.add('active');
             }
-        );
+        }
 
-    }
+        function goHome() {
+            document.getElementById('profilePageSection').classList.remove('active');
+            document.getElementById('searchMainContent').style.display = 'block';
+        }
 
-});
+        function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 
-</script>
+        function switchAuthTab(tab) {
+            if (tab === 'register') {
+                document.getElementById('loginFormContainer').style.display = 'none';
+                document.getElementById('registerFormContainer').style.display = 'block';
+            } else {
+                document.getElementById('registerFormContainer').style.display = 'none';
+                document.getElementById('loginFormContainer').style.display = 'block';
+            }
+        }
 
+        function toggleEditBox(boxId) {
+            document.getElementById(boxId).classList.toggle('active');
+        }
+
+        async function saveNewUsername() {
+            const newName = document.getElementById('newUsernameInput').value.trim();
+            if (!newName) { showSiteAlert('profileAlert', 'Введите новый юзернейм', true); return; }
+            currentUser.username = newName;
+            localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
+            document.getElementById('profUsername').innerText = currentUser.username;
+            toggleEditBox('editUserBox');
+            showSiteAlert('profileAlert', 'Юзернейм успешно обновлен!');
+        }
+
+        async function saveNewPassword() {
+            const newPass = document.getElementById('newPassInput').value;
+            if (!newPass) { showSiteAlert('profileAlert', 'Введите новый пароль', true); return; }
+            toggleEditBox('editPassBox');
+            showSiteAlert('profileAlert', 'Пароль успешно изменен!');
+        }
+
+        async function handleRegister() {
+            const user = document.getElementById('regUser').value.trim();
+            const pass = document.getElementById('regPass').value;
+            const confirmPass = document.getElementById('regConfirmPass').value;
+            if (!user || !pass) { showSiteAlert('modalAlert', 'Заполните все поля', true); return; }
+            if (pass !== confirmPass) { showSiteAlert('modalAlert', 'Пароли не совпадают', true); return; }
+            currentUser = { username: user, avatar: 'https://via.placeholder.com/90' };
+            localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
+            closeAuthModal();
+            openProfilePage();
+        }
+
+        async function handleLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            if (!user) { showSiteAlert('modalAlert', 'Введите юзернейм', true); return; }
+            currentUser = { username: user, avatar: 'https://via.placeholder.com/90' };
+            localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
+            closeAuthModal();
+            openProfilePage();
+        }
+
+        function renderProfilePageData() {
+            if (!currentUser) return;
+            document.getElementById('profUsername').innerText = currentUser.username;
+            document.getElementById('profileAvatarImg').src = currentUser.avatar;
+            document.getElementById('profPasswordDisplay').innerText = "Пароль: ******";
+
+            let history = JSON.parse(localStorage.getItem('uniview_history_' + currentUser.username)) || [];
+            const list = document.getElementById('historyPageList');
+            list.innerHTML = '';
+            
+            if (history.length > 0) {
+                history.forEach(uniName => {
+                    const li = document.createElement('li');
+                    li.className = 'history-page-item';
+                    li.innerHTML = `<span>${uniName}</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Запросить инфо &rarr;</span>`;
+                    li.onclick = () => {
+                        goHome();
+                        document.getElementById('uniInput').value = uniName;
+                        handleSearch('1');
+                    };
+                    list.appendChild(li);
+                });
+            } else {
+                list.innerHTML = '<li class="history-page-item" style="color:var(--text-muted); cursor: default;">История поиска пуста</li>';
+            }
+        }
+
+        // ЗАПРОС К GEMINI API (ИСПРАВЛЕН ПОД КЛЮЧИ AQ. С ЗАГОЛОВКОМ x-goog-api-key)
+        async function handleSearch(mode) {
+            const input = document.getElementById('uniInput');
+            const loading = document.getElementById('loading');
+            const resultsCard = document.getElementById('resultsCard');
+            const resContent = document.getElementById('resContent');
+            
+            const query = input.value.trim();
+            if (!query) { showSiteAlert('mainAlert', 'Введите название университета', true); return; }
+
+            if (GEMINI_API_KEY.includes("...") || GEMINI_API_KEY === "") {
+                showSiteAlert('mainAlert', 'Ошибка: Вставьте ваш реальный ключ API в переменную GEMINI_API_KEY в коде.', true);
+                return;
+            }
+
+            loading.style.display = 'flex';
+            resultsCard.classList.remove('active');
+
+            if (currentUser) {
+                let hKey = 'uniview_history_' + currentUser.username;
+                let history = JSON.parse(localStorage.getItem(hKey)) || [];
+                if (!history.includes(query)) {
+                    history.unshift(query);
+                    localStorage.setItem(hKey, JSON.stringify(history));
+                }
+            }
+
+            let promptText = `Сделай подробную аналитику для абитуриента по университету: "${query}". 
+            Формат ответа: ${mode === '2' ? 'Полная детальная аналитика (факультеты, проходные баллы, гранты, условия проживания, трудоустройство)' : 'Быстрый экспертный срез (основные показатели, гранты, проходной балл)'}. 
+            Отвечай структурировано на языке: ${currentLang === 'kz' ? 'казахском' : currentLang === 'en' ? 'английском' : 'русском'}. 
+            Если университет не существует, так и скажи.`;
+
+            try {
+                // Обратите внимание: URL больше не содержит ?key=..., ключ передается в заголовке x-goog-api-key
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': GEMINI_API_KEY
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: promptText }]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.text();
+                    throw new Error(`API Error ${response.status}: ${errData}`);
+                }
+
+                const data = await response.json();
+                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Не удалось получить ответ от нейросети.";
+
+                loading.style.display = 'none';
+                resultsCard.classList.add('active');
+                resContent.innerText = aiResponse;
+
+            } catch (error) {
+                loading.style.display = 'none';
+                showSiteAlert('mainAlert', 'Сбой при обращении к нейросети: ' + error.message, true);
+            }
+        }
+    </script>
 </body>
 </html>
-```
