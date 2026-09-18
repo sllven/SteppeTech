@@ -69,7 +69,7 @@ app.post('/api/register', async (req, res) => {
             }
         );
     } catch (e) {
-        res.status(500.0).json({ success: false, error: 'Ошибка сервера' });
+        res.status(500).json({ success: false, error: 'Ошибка сервера' });
     }
 });
 
