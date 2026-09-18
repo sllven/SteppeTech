@@ -63,19 +63,51 @@
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(37, 99, 235, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* СЛАЙДЕР С КАРТОЧКАМИ */
-        .features-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
-        .features-section h2 { font-size: 1.35rem; margin-bottom: 0.5rem; color: var(--text-main); }
-        .slider-container { position: relative; margin-top: 1.25rem; display: flex; align-items: center; }
-        .features-slider { display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-bottom: 0.5rem; width: 100%; scrollbar-width: none; }
+        /* ИСПРАВЛЕННЫЕ КАРТОЧКИ (СВЕЖИЙ СТИЛЬ, ДЛИННЕЕ И УДОБНЕЕ) */
+        .features-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.25rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
+        .features-section h2 { font-size: 1.4rem; margin-bottom: 0.35rem; color: var(--text-main); font-weight: 700; }
+        .slider-container { position: relative; margin-top: 1.5rem; display: flex; align-items: center; }
+        .features-slider { display: flex; gap: 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding: 4px 2px 12px 2px; width: 100%; scrollbar-width: none; }
         .features-slider::-webkit-scrollbar { display: none; }
-        .feature-card { flex: 0 0 280px; scroll-snap-align: start; background: var(--bg-color); border: 1px solid var(--border); padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between; }
-        .feature-card h3 { font-size: 1.05rem; color: var(--text-main); margin-bottom: 0.5rem; font-weight: 700; }
-        .feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
-        .slider-btn { background: var(--card-bg); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: var(--text-main); transition: all 0.2s; }
+        
+        .feature-card { 
+            flex: 0 0 340px; 
+            scroll-snap-align: start; 
+            background: #ffffff; 
+            border: 1px solid var(--border); 
+            padding: 1.75rem; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .feature-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            transform: translateY(-2px);
+        }
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .feature-card h3 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.6rem; font-weight: 700; }
+        .feature-card p { font-size: 0.93rem; color: var(--text-muted); line-height: 1.6; }
+        
+        .slider-btn { background: var(--card-bg); border: 1px solid var(--border); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.08); color: var(--text-main); transition: all 0.2s; }
         .slider-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .slider-btn.prev { left: -20px; }
-        .slider-btn.next { right: -20px; }
+        .slider-btn.prev { left: -21px; }
+        .slider-btn.next { right: -21px; }
 
         .profile-page-section { display: none; }
         .profile-page-section.active { display: block; }
@@ -88,7 +120,6 @@
         
         .profile-field-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); border: 1px solid var(--border); padding: 0.9rem 1.25rem; border-radius: 8px; margin-bottom: 0.75rem; position: relative; }
         
-        /* ЧБ КАРАНДАШИК */
         .edit-pencil-btn { width: 32px; height: 32px; border-radius: 50%; background: #ffffff; border: 1px solid #cbd5e1; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #334155; font-size: 0.85rem; transition: all 0.2s; }
         .edit-pencil-btn:hover { background: #f1f5f9; border-color: #0f172a; color: #0f172a; }
 
@@ -252,38 +283,47 @@
                 </div>
             </div>
 
-            <!-- БЛОК С КАРТОЧКАМИ (СВАПАЙКА) -->
+            <!-- ИСПРАВЛЕННЫЙ БЛОК С КАРТОЧКАМИ -->
             <div class="features-section">
                 <h2 id="featuresMainTitle">Почему абитуриенты выбирают нас?</h2>
-                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;" id="featuresMainSub">Листайте карточки, чтобы узнать все преимущества сервиса.</p>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 0.5rem;" id="featuresMainSub">Листайте карточки, чтобы узнать все преимущества платформы.</p>
                 
                 <div class="slider-container">
                     <button class="slider-btn prev" onclick="scrollSlider(-1)">&#10094;</button>
                     <div id="featuresSlider" class="features-slider">
+                        
                         <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
                             <div>
                                 <h3 id="feat1Title">Нейросетевая точность</h3>
-                                <p id="feat1Desc">Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.</p>
+                                <p id="feat1Desc">Забудьте про долгие поиски по форумам. Наш алгоритм собирает актуальные требования, условия поступления и реальные данные из надежных источников за пару секунд.</p>
                             </div>
                         </div>
+
                         <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
                             <div>
                                 <h3 id="feat2Title">Твой карьерный компас</h3>
-                                <p id="feat2Desc">Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.</p>
+                                <p id="feat2Desc">Мы подсвечиваем не только проходные баллы, но и перспективы: доступные гранты, сильные профильные направления и реальные возможности трудоустройства после выпуска.</p>
                             </div>
                         </div>
+
                         <div class="feature-card">
+                            <div class="feature-icon">🛡️</div>
                             <div>
                                 <h3 id="feat3Title">Без воды и рекламы</h3>
-                                <p id="feat3Desc">Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.</p>
+                                <p id="feat3Desc">Никаких проплаченных баннеров и скрытых партнерских ссылок на сомнительные курсы. Только честная, глубоко структурированная аналитика для принятия главного решения.</p>
                             </div>
                         </div>
+
                         <div class="feature-card">
+                            <div class="feature-icon">🧠</div>
                             <div>
-                                <h3 id="feat4Title">Умный профиль</h3>
-                                <p id="feat4Desc">Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке.</p>
+                                <h3 id="feat4Title">Персональный профиль</h3>
+                                <p id="feat4Desc">Сохраняйте историю запросов в один клик, возвращайтесь к изучению выбранных вузов в любой момент и настраивайте интерфейс под нужный вам язык.</p>
                             </div>
                         </div>
+
                     </div>
                     <button class="slider-btn next" onclick="scrollSlider(1)">&#10095;</button>
                 </div>
@@ -408,15 +448,15 @@
                 historyTitle: "История поиска университетов", historySub: "Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:",
                 backBtn: "Вернуться к поиску",
                 featuresMainTitle: "Почему абитуриенты выбирают нас?",
-                featuresMainSub: "Листайте карточки, чтобы узнать все преимущества сервиса.",
+                featuresMainSub: "Листайте карточки, чтобы узнать все преимущества платформы.",
                 feat1Title: "Нейросетевая точность",
-                feat1Desc: "Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.",
+                feat1Desc: "Забудьте про долгие поиски по форумам. Наш алгоритм собирает актуальные требования, условия поступления и реальные данные из надежных источников за пару секунд.",
                 feat2Title: "Твой карьерный компас",
-                feat2Desc: "Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.",
+                feat2Desc: "Мы подсвечиваем не только проходные баллы, но и перспективы: доступные гранты, сильные профильные направления и реальные возможности трудоустройства после выпуска.",
                 feat3Title: "Без воды и рекламы",
-                feat3Desc: "Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.",
-                feat4Title: "Умный профиль",
-                feat4Desc: "Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке.",
+                feat3Desc: "Никаких проплаченных баннеров и скрытых партнерских ссылок на сомнительные курсы. Только честная, глубоко структурированная аналитика для принятия главного решения.",
+                feat4Title: "Персональный профиль",
+                feat4Desc: "Сохраняйте историю запросов в один клик, возвращайтесь к изучению выбранных вузов в любой момент и настраивайте интерфейс под нужный вам язык.",
                 forgotPass: "Забыли пароль?"
             },
             kz: {
@@ -431,15 +471,15 @@
                 historyTitle: "Университеттерді іздеу тарихы", historySub: "Тізімнен университет атауын басып, ақпаратты қайта сұраңыз:",
                 backBtn: "Іздеуге оралу",
                 featuresMainTitle: "Талапкерлер неге бізді таңдайды?",
-                featuresMainSub: "Қызметтің барлық артықшылықтарын білу үшін карточкаларды парақтаңыз.",
+                featuresMainSub: "Платформаның барлық артықшылықтарын білу үшін карточкаларды парақтаңыз.",
                 feat1Title: "Нейрожелілік дәлдік",
-                feat1Desc: "Ұзақ іздеуді ұмытыңыз. ЖИ ондаған дереккөздерден тек нақты фактілерді жинап береді.",
+                feat1Desc: "Форумдардан ұзақ іздеуді ұмытыңыз. Біздің алгоритм сенімді дереккөздерден қажетті талаптар мен шарттарды бірнеше секундта жинайды.",
                 feat2Title: "Сенің мансаптық компасың",
-                feat2Desc: "Біз тек шекті балдарды ғана емес, гранттарды, мықты факультеттерді және жұмысқа орналасу мүмкіндіктерін көрсетеміз.",
-                feat3Title: "Жарнамасыз, тек фактілер",
-                feat3Desc: "ЖОО-лардың жарнамалық баннерлері жоқ. Тек шешім қабылдауға арналған адал әрі құрылымдық аналитика.",
-                feat4Title: "Ақылды профиль",
-                feat4Desc: "Университеттерді салыстырыңыз, іздеу тарихын сақтаңыз және өзіңізге ыңғайлы тілде кез келген уақытта қайта оралыңыз.",
+                feat2Desc: "Біз тек шекті балдарды ғана емес, гранттарды, мықты профильдік бағыттарды және оқуды бітіргеннен кейінгі жұмысқа орналасу мүмкіндіктерін көрсетеміз.",
+                feat3Title: "Артық ақпаратсыз және жарнамасыз",
+                feat3Desc: "Ешқандай жарнамалық баннерлер мен күмәнді сілтемелер жоқ. Шешім қабылдауға арналған адал әрі құрылымдық аналитика ғана.",
+                feat4Title: "Жеке профиль",
+                feat4Desc: "Іздеу тарихын бір рет басу арқылы сақтаңыз, таңдалған ЖОО-ларды кез келген уақытта қарап шығыңыз және интерфейсті өзіңізге ыңғайлы тілге келтіріңіз.",
                 forgotPass: "Құпия сөзді ұмытыңыз ба?"
             },
             en: {
@@ -456,20 +496,20 @@
                 featuresMainTitle: "Why do applicants choose us?",
                 featuresMainSub: "Swipe through the cards to explore all the platform's features.",
                 feat1Title: "Neural Network Accuracy",
-                feat1Desc: "Forget endless googling. AI instantly gathers data from dozens of sources, giving you only the facts.",
+                feat1Desc: "Forget endless forum browsing. Our algorithm extracts relevant admission requirements and real data from trusted sources in just a few seconds.",
                 feat2Title: "Your Career Compass",
-                feat2Desc: "We show more than passing scores: grants, top faculties, and future employment prospects.",
+                feat2Desc: "We highlight more than passing scores: available grants, strong academic tracks, and genuine employment prospects after graduation.",
                 feat3Title: "No Fluff, No Ads",
-                feat3Desc: "No promotional university banners. Only honest, structured, and transparent analytics for your decision.",
-                feat4Title: "Smart Profile",
-                feat4Desc: "Compare universities, save your search history, and return to your research anytime in your preferred language.",
+                feat3Desc: "No paid banners or hidden promotional links. Only honest, deeply structured analytics designed to help you make the right choice.",
+                feat4Title: "Personal Profile",
+                feat4Desc: "Save your search history with a single click, return to your researched universities anytime, and adjust the interface to your preferred language.",
                 forgotPass: "Forgot password?"
             }
         };
 
         function scrollSlider(direction) {
             const slider = document.getElementById('featuresSlider');
-            const scrollAmount = 300;
+            const scrollAmount = 350;
             slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
