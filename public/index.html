@@ -318,85 +318,8 @@
         <div class="footer-copy">© 2026 UniView AI. Все права защищены.</div>
     </footer>
 
-    <script>
-        // =====================================================================
-        // ВСТАВЬТЕ ВАШ КЛЮЧ ФОРМАТА AQ. В КАВЫЧКИ НИЖЕ
-        // =====================================================================
-        const GEMINI_API_KEY = "AQ.Ab8RN6JpyasaRj7-88Mxxx5EMeyXx6NKCeyp4UWQmU53u3xkGA"; // <--- Ваш ключ здесь
-        // =====================================================================
-
-        const translations = {
-            ru: {
-                title: "UniView AI — Сервис поиска университетов",
-                mainTitle: "Поиск университетов через AI",
-                mainSubtitle: "Введите название вуза, чтобы получить мгновенную аналитику для поступления.",
-                searchBtn: "Найти",
-                loadingText: "Нейросеть собирает данные... Пожалуйста, подождите.",
-                placeholder: "Название университета...",
-                menuProfile: "Профиль", menuHome: "Главная", menuAbout: "Подробнее о нас", menuContacts: "Контакты", menuFaq: "FAQ",
-                fAbout: "Подробнее о нас", fPp: "Политика Конфиденциальности", fT: "Условия Пользования", fFaq: "FAQ", fCc: "Контакты",
-                historyTitle: "История поиска университетов", historySub: "Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:",
-                backBtn: "Вернуться к поиску",
-                
-                featuresMainTitle: "Почему абитуриенты выбирают нас?",
-                featuresMainSub: "Сделайте осознанный выбор будущего университета без долгих поисков.",
-                feat1Title: "Нейросетевая точность",
-                feat1Desc: "Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.",
-                feat2Title: "Твой карьерный компас",
-                feat2Desc: "Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.",
-                feat3Title: "Без воды и рекламы",
-                feat3Desc: "Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.",
-                feat4Title: "Умный профиль",
-                feat4Desc: "Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке."
-            },
-            kz: {
-                title: "UniView AI — Университеттерді іздеу қызметі",
-                mainTitle: "AI арқылы университеттерді іздеу",
-                mainSubtitle: "Оқуға түсу үшін лезде аналитика алу мақсатында ЖОО атауын енгізіңіз.",
-                searchBtn: "Іздеу",
-                loadingText: "Нейрожелі деректерді жинауда... Күте тұрыңыз.",
-                placeholder: "Университет атауы...",
-                menuProfile: "Профиль", menuHome: "Басты бет", menuAbout: "Біз туралы", menuContacts: "Байланыс", menuFaq: "FAQ",
-                fAbout: "Біз туралы", fPp: "Құпиялылық саясаты", fT: "Пайдалану шарттары", fFaq: "FAQ", fCc: "Байланыс",
-                historyTitle: "Университеттерді іздеу тарихы", historySub: "Тізімнен университет пен атауды басып, ақпаратты қайта сұраңыз:",
-                backBtn: "Іздеуге оралу",
-                
-                featuresMainTitle: "Талапкерлер неге бізді таңдайды?",
-                featuresMainSub: "Ұзақ ізденіссіз болашақ университетіңізді саналы түрде таңдаңыз.",
-                feat1Title: "Нейрожелілік дәлдік",
-                feat1Desc: "Ұзақ іздеуді ұмытыңыз. ЖИ ондаған дереккөздерден тек нақты фактілерді жинап береді.",
-                feat2Title: "Сенің мансаптық компасың",
-                feat2Desc: "Біз тек шекті балдарды ғана емес, гранттарды, мықты факультеттерді және жұмысқа орналасу мүмкіндіктерін көрсетеміз.",
-                feat3Title: "Жарнамасыз, тек фактілер",
-                feat3Desc: "ЖОО-лардың жарнамалық баннерлері жоқ. Тек шешім қабылдауға арналған адал әрі құрылымдық аналитика.",
-                feat4Title: "Ақылды профиль",
-                feat4Desc: "Университеттерді салыстырыңыз, іздеу тарихын сақтаңыз және өзіңізге ыңғайлы тілде кез келген уақытта қайта оралыңыз."
-            },
-            en: {
-                title: "UniView AI — University Search Service",
-                mainTitle: "University Search via AI",
-                mainSubtitle: "Enter the university name to get instant analytics for your admission.",
-                searchBtn: "Search",
-                loadingText: "Neural network is gathering data... Please wait.",
-                placeholder: "University name...",
-                menuProfile: "Profile", menuHome: "Home", menuAbout: "About Us", menuContacts: "Contacts", menuFaq: "FAQ",
-                fAbout: "About Us", fPp: "Privacy Policy", fT: "Terms of Use", fFaq: "FAQ", fCc: "Contacts",
-                historyTitle: "University Search History", historySub: "Click on a university from the list to instantly query live info:",
-                backBtn: "Back to Search",
-                
-                featuresMainTitle: "Why do applicants choose us?",
-                featuresMainSub: "Make an informed choice about your future university without endless searching.",
-                feat1Title: "Neural Network Accuracy",
-                feat1Desc: "Forget endless googling. AI instantly gathers data from dozens of sources, giving you only the facts.",
-                feat2Title: "Your Career Compass",
-                feat2Desc: "We show more than passing scores: grants, top faculties, and future employment prospects.",
-                feat3Title: "No Fluff, No Ads",
-                feat3Desc: "No promotional university banners. Only honest, structured, and transparent analytics for your decision.",
-                feat4Title: "Smart Profile",
-                feat4Desc: "Compare universities, save your search history, and return to your research anytime in your preferred language."
-            }
-        };
-
+       <script>
+        // Бэкенд работает на том же хосте, поэтому запросы идут на /api/...
         let currentLang = 'ru';
 
         function changeLanguage(lang, btn) {
@@ -489,69 +412,130 @@
         async function saveNewUsername() {
             const newName = document.getElementById('newUsernameInput').value.trim();
             if (!newName) { showSiteAlert('profileAlert', 'Введите новый юзернейм', true); return; }
-            currentUser.username = newName;
-            localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
-            document.getElementById('profUsername').innerText = currentUser.username;
-            toggleEditBox('editUserBox');
-            showSiteAlert('profileAlert', 'Юзернейм успешно обновлен!');
+            
+            try {
+                const res = await fetch('/api/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentUsername: currentUser.username, newUsername: newName })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+
+                currentUser = data.user;
+                localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
+                document.getElementById('profUsername').innerText = currentUser.username;
+                toggleEditBox('editUserBox');
+                showSiteAlert('profileAlert', 'Юзернейм успешно обновлен!');
+            } catch (e) {
+                showSiteAlert('profileAlert', e.message, true);
+            }
         }
 
         async function saveNewPassword() {
             const newPass = document.getElementById('newPassInput').value;
             if (!newPass) { showSiteAlert('profileAlert', 'Введите новый пароль', true); return; }
-            toggleEditBox('editPassBox');
-            showSiteAlert('profileAlert', 'Пароль успешно изменен!');
+            
+            try {
+                const res = await fetch('/api/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentUsername: currentUser.username, newPassword: newPass, currentPassword: '' }) // упрощенно
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+
+                toggleEditBox('editPassBox');
+                showSiteAlert('profileAlert', 'Пароль успешно изменен!');
+            } catch (e) {
+                showSiteAlert('profileAlert', e.message, true);
+            }
         }
 
         async function handleRegister() {
-            const user = document.getElementById('regUser').value.trim();
-            const pass = document.getElementById('regPass').value;
+            const username = document.getElementById('regUser').value.trim();
+            const password = document.getElementById('regPass').value;
             const confirmPass = document.getElementById('regConfirmPass').value;
-            if (!user || !pass) { showSiteAlert('modalAlert', 'Заполните все поля', true); return; }
-            if (pass !== confirmPass) { showSiteAlert('modalAlert', 'Пароли не совпадают', true); return; }
-            currentUser = { username: user, avatar: 'https://via.placeholder.com/90' };
-            localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
-            closeAuthModal();
-            openProfilePage();
+            
+            if (!username || !password) { showSiteAlert('modalAlert', 'Заполните все поля', true); return; }
+            if (password !== confirmPass) { showSiteAlert('modalAlert', 'Пароли не совпадают', true); return; }
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+
+                currentUser = data.user;
+                localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
+                closeAuthModal();
+                openProfilePage();
+            } catch (e) {
+                showSiteAlert('modalAlert', e.message, true);
+            }
         }
 
         async function handleLogin() {
-            const user = document.getElementById('loginUser').value.trim();
-            if (!user) { showSiteAlert('modalAlert', 'Введите юзернейм', true); return; }
-            currentUser = { username: user, avatar: 'https://via.placeholder.com/90' };
-            localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
-            closeAuthModal();
-            openProfilePage();
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value;
+            if (!username || !password) { showSiteAlert('modalAlert', 'Введите юзернейм и пароль', true); return; }
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error);
+
+                currentUser = data.user;
+                localStorage.setItem('uniview_current_user', JSON.stringify(currentUser));
+                closeAuthModal();
+                openProfilePage();
+            } catch (e) {
+                showSiteAlert('modalAlert', e.message, true);
+            }
         }
 
-        function renderProfilePageData() {
+        async function renderProfilePageData() {
             if (!currentUser) return;
             document.getElementById('profUsername').innerText = currentUser.username;
             document.getElementById('profileAvatarImg').src = currentUser.avatar;
             document.getElementById('profPasswordDisplay').innerText = "Пароль: ******";
 
-            let history = JSON.parse(localStorage.getItem('uniview_history_' + currentUser.username)) || [];
             const list = document.getElementById('historyPageList');
             list.innerHTML = '';
             
-            if (history.length > 0) {
-                history.forEach(uniName => {
-                    const li = document.createElement('li');
-                    li.className = 'history-page-item';
-                    li.innerHTML = `<span>${uniName}</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Запросить инфо &rarr;</span>`;
-                    li.onclick = () => {
-                        goHome();
-                        document.getElementById('uniInput').value = uniName;
-                        handleSearch('1');
-                    };
-                    list.appendChild(li);
-                });
-            } else {
-                list.innerHTML = '<li class="history-page-item" style="color:var(--text-muted); cursor: default;">История поиска пуста</li>';
+            try {
+                const res = await fetch(`/api/history/${encodeURIComponent(currentUser.username)}`);
+                const data = await res.json();
+                const history = data.history || [];
+
+                if (history.length > 0) {
+                    history.forEach(uniName => {
+                        const li = document.createElement('li');
+                        li.className = 'history-page-item';
+                        li.innerHTML = `<span>${uniName}</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">Запросить инфо &rarr;</span>`;
+                        li.onclick = () => {
+                            goHome();
+                            document.getElementById('uniInput').value = uniName;
+                            handleSearch('1');
+                        };
+                        list.appendChild(li);
+                    });
+                } else {
+                    list.innerHTML = '<li class="history-page-item" style="color:var(--text-muted); cursor: default;">История поиска пуста</li>';
+                }
+            } catch (e) {
+                list.innerHTML = '<li class="history-page-item" style="color:var(--text-muted); cursor: default;">Ошибка загрузки истории</li>';
             }
         }
 
-        // ЗАПРОС К GEMINI API (ИСПРАВЛЕН ПОД КЛЮЧИ AQ. С ЗАГОЛОВКОМ x-goog-api-key)
+        // ЗАПРОС К СЕРВЕРУ (ИИ ИСТОЧНИК НА БЭКЕНДЕ)
         async function handleSearch(mode) {
             const input = document.getElementById('uniInput');
             const loading = document.getElementById('loading');
@@ -561,54 +545,26 @@
             const query = input.value.trim();
             if (!query) { showSiteAlert('mainAlert', 'Введите название университета', true); return; }
 
-            if (GEMINI_API_KEY.includes("...") || GEMINI_API_KEY === "") {
-                showSiteAlert('mainAlert', 'Ошибка: Вставьте ваш реальный ключ API в переменную GEMINI_API_KEY в коде.', true);
-                return;
-            }
-
             loading.style.display = 'flex';
             resultsCard.classList.remove('active');
 
-            if (currentUser) {
-                let hKey = 'uniview_history_' + currentUser.username;
-                let history = JSON.parse(localStorage.getItem(hKey)) || [];
-                if (!history.includes(query)) {
-                    history.unshift(query);
-                    localStorage.setItem(hKey, JSON.stringify(history));
-                }
-            }
-
-            let promptText = `Сделай подробную аналитику для абитуриента по университету: "${query}". 
-            Формат ответа: ${mode === '2' ? 'Полная детальная аналитика (факультеты, проходные баллы, гранты, условия проживания, трудоустройство)' : 'Быстрый экспертный срез (основные показатели, гранты, проходной балл)'}. 
-            Отвечай структурировано на языке: ${currentLang === 'kz' ? 'казахском' : currentLang === 'en' ? 'английском' : 'русском'}. 
-            Если университет не существует, так и скажи.`;
-
             try {
-                // Обратите внимание: URL больше не содержит ?key=..., ключ передается в заголовке x-goog-api-key
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`, {
+                const response = await fetch('/api/search', {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'x-goog-api-key': GEMINI_API_KEY
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: promptText }]
-                        }]
+                        query: query,
+                        mode: mode,
+                        username: currentUser ? currentUser.username : null
                     })
                 });
 
-                if (!response.ok) {
-                    const errData = await response.text();
-                    throw new Error(`API Error ${response.status}: ${errData}`);
-                }
-
                 const data = await response.json();
-                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Не удалось получить ответ от нейросети.";
+                if (!data.success) throw new Error(data.error);
 
                 loading.style.display = 'none';
                 resultsCard.classList.add('active');
-                resContent.innerText = aiResponse;
+                resContent.innerText = data.data;
 
             } catch (error) {
                 loading.style.display = 'none';
