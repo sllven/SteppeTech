@@ -52,10 +52,22 @@
         p.subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 1rem; }
         
         .search-container { display: flex; flex-direction: column; gap: 1.25rem; }
-        .search-input-wrapper { display: flex; gap: 0.75rem; background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 8px; width: 100%; transition: border-color 0.2s; }
-        .search-input-wrapper:focus-within { border-color: var(--accent); }
-        .search-input { flex: 1; border: none; background: transparent; padding: 0.6rem 1rem; font-size: 1rem; outline: none; color: var(--text-main); }
-        .search-btn { background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+        
+        /* ИСПРАВЛЕННЫЙ БЛОК ВВОДА: кнопка строго внутри контейнера */
+        .search-input-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            background: var(--bg-color); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 6px 6px 6px 14px; 
+            width: 100%; 
+            transition: border-color 0.2s; 
+        }
+        .search-input-wrapper:focus-within { border-color: var(--accent); background: #ffffff; }
+        .search-input { flex: 1; border: none; background: transparent; padding: 0.4rem 0; font-size: 1rem; outline: none; color: var(--text-main); min-width: 0; }
+        .search-btn { background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
         .search-btn:hover { background: var(--primary-hover); }
 
         .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -66,7 +78,7 @@
         .spinner { width: 18px; height: 18px; border: 2px solid rgba(17, 24, 39, 0.2); border-top-color: var(--text-main); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ИСХОДНЫЙ СЛАЙДЕР, НО С ВЫТЯНУТЫМИ ВНИЗ КАРТОЧКАМИ БЕЗ ЭМОДЗИ */
+        /* КАРТОЧКИ В КАРУСЕЛИ (ВЫТЯНУТЫ ВНИЗ, БЕЗ ЭМОДЗИ) */
         .features-section { margin-top: 3rem; }
         .features-section h2 { font-size: 1.5rem; margin-bottom: 0.4rem; color: var(--text-main); font-weight: 700; letter-spacing: -0.02em; }
         
@@ -86,7 +98,7 @@
         
         .feature-card { 
             flex: 0 0 300px; 
-            min-height: 290px; /* Вытянуты вниз */
+            min-height: 290px; 
             scroll-snap-align: start; 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
@@ -163,7 +175,7 @@
 </head>
 <body>
     <header>
-        <a href="https://uniview.mansur.cfd" class="logo">UniView<span></a>
+        <a href="https://uniview.mansur.cfd" class="logo">UniView<span>.ai</span></a>
         <div class="top-controls">
             <div class="lang-pill">
                 <button class="lang-btn active" onclick="changeLanguage('ru', this)">RU</button>
@@ -175,9 +187,9 @@
                 <div id="dropdownMenu" class="dropdown-menu">
                     <button onclick="openProfilePage()" class="profile-menu-item" id="menuProfileText">Профиль</button>
                     <a href="https://uniview.mansur.cfd" id="menuHomeText">Главная</a>
-                    <a href="https://sllven.github.io/SteppeTech/about" id="menuAboutText">О проекте</a>
-                    <a href="https://sllven.github.io/SteppeTech/contact" id="menuContactsText">Контакты</a>
-                    <a href="https://sllven.github.io/SteppeTech/faq" id="menuFaqText">FAQ</a>
+                    <a href="https://uniview-ai.mansur.cfd/about" id="menuAboutText">О проекте</a>
+                    <a href="https://uniview-ai.mansur.cfd/contact" id="menuContactsText">Контакты</a>
+                    <a href="https://uniview-ai.mansur.cfd/faq" id="menuFaqText">FAQ</a>
                 </div>
             </div>
         </div>
@@ -237,7 +249,7 @@
                         <button class="modal-btn" style="margin-top:0; background:#f3f4f6; color:var(--text-main);" onclick="toggleEditBox('editPassBox')">Отмена</button>
                     </div>
                     <div style="margin-top: 1rem; font-size: 0.85rem;">
-                        <a href="https://sllven.github.io/SteppeTech/cc" style="color: var(--accent); text-decoration: none; font-weight: 500;" id="forgotPasswordLink">Забыли пароль?</a>
+                        <a href="https://uniview-ai.mansur.cfd/contact" style="color: var(--accent); text-decoration: none; font-weight: 500;" id="forgotPasswordLink">Забыли пароль?</a>
                     </div>
                 </div>
 
@@ -282,7 +294,7 @@
                 </div>
             </div>
 
-            <!-- КАРТОЧКИ В СЛАЙДЕРЕ (ЛИСТАЮТСЯ ВБОК, ВЫТЯНУТЫ ВНИЗ, БЕЗ ЭМОДЗИ) -->
+            <!-- КАРТОЧКИ В СЛАЙДЕРЕ -->
             <div class="features-section">
                 <h2 id="featuresMainTitle">Преимущества платформы</h2>
                 <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;" id="featuresMainSub">Ключевые принципы работы нашего аналитического модуля.</p>
@@ -364,13 +376,13 @@
     <footer>
         <div class="footer-content">
             <div class="footer-col">
-                <a href="https://sllven.github.io/SteppeTech/about" id="footerAbout">О проекте</a>
-                <a href="https://sllven.github.io/SteppeTech/pp" id="footerPp">Политика конфиденциальности</a>
-                <a href="https://sllven.github.io/SteppeTech/t" id="footerT">Условия использования</a>
+                <a href="https://uniview-ai.mansur.cfd/about" id="footerAbout">О проекте</a>
+                <a href="https://uniview-ai.mansur.cfd/political" id="footerPp">Политика конфиденциальности</a>
+                <a href="https://uniview-ai.mansur.cfd/terms" id="footerT">Условия использования</a>
             </div>
             <div class="footer-col" style="align-items: flex-end;">
-                <a href="https://sllven.github.io/SteppeTech/faq" id="footerFaq">FAQ</a>
-                <a href="https://sllven.github.io/SteppeTech/cc" id="footerCc">Контакты</a>
+                <a href="https://uniview-ai.mansur.cfd/faq" id="footerFaq">FAQ</a>
+                <a href="https://uniview-ai.mansur.cfd/contact" id="footerCc">Контакты</a>
             </div>
         </div>
         <div class="footer-copy">© 2026 UniView AI. Все права защищены.</div>
