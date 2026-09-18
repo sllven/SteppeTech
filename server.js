@@ -10,7 +10,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Инициализация Gemini API (ключ берется из переменных окружения процесса)
-const ai = new GoogleGenAI();
+const ai = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6L7WZaN19QOgDE1hvyfYYRxS23RD0k0Mg2ta_3GE6nMIA' });
+
 
 app.use(express.json());
 app.use(cors());
