@@ -63,12 +63,19 @@
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(37, 99, 235, 0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* СЛАЙДЕР С КАРТОЧКАМИ */
         .features-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 2rem; }
-        .features-section h2 { font-size: 1.35rem; margin-bottom: 1rem; color: var(--text-main); }
-        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1rem; }
-        .feature-item { background: var(--bg-color); border: 1px solid var(--border); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--primary); }
-        .feature-item h3 { font-size: 1rem; color: var(--text-main); margin-bottom: 0.4rem; font-weight: 700; }
-        .feature-item p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+        .features-section h2 { font-size: 1.35rem; margin-bottom: 0.5rem; color: var(--text-main); }
+        .slider-container { position: relative; margin-top: 1.25rem; display: flex; align-items: center; }
+        .features-slider { display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-bottom: 0.5rem; width: 100%; scrollbar-width: none; }
+        .features-slider::-webkit-scrollbar { display: none; }
+        .feature-card { flex: 0 0 280px; scroll-snap-align: start; background: var(--bg-color); border: 1px solid var(--border); padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between; }
+        .feature-card h3 { font-size: 1.05rem; color: var(--text-main); margin-bottom: 0.5rem; font-weight: 700; }
+        .feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+        .slider-btn { background: var(--card-bg); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: var(--text-main); transition: all 0.2s; }
+        .slider-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .slider-btn.prev { left: -20px; }
+        .slider-btn.next { right: -20px; }
 
         .profile-page-section { display: none; }
         .profile-page-section.active { display: block; }
@@ -80,10 +87,12 @@
         .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
         
         .profile-field-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); border: 1px solid var(--border); padding: 0.9rem 1.25rem; border-radius: 8px; margin-bottom: 0.75rem; position: relative; }
-        .edit-circle-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--primary); font-size: 0.85rem; font-weight: bold; transition: all 0.2s; }
-        .edit-circle-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        /* ЧБ КАРАНДАШИК */
+        .edit-pencil-btn { width: 32px; height: 32px; border-radius: 50%; background: #ffffff; border: 1px solid #cbd5e1; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #334155; font-size: 0.85rem; transition: all 0.2s; }
+        .edit-pencil-btn:hover { background: #f1f5f9; border-color: #0f172a; color: #0f172a; }
 
-        .inline-edit-box { display: none; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .inline-edit-box { display: none; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .inline-edit-box.active { display: block; }
 
         .history-page-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
@@ -116,7 +125,7 @@
         .footer-copy { text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 1rem; }
 
         @media(max-width: 650px) {
-            .features-grid { grid-template-columns: 1fr; }
+            .slider-btn { display: none; }
         }
     </style>
 </head>
@@ -155,11 +164,10 @@
                                 <img id="profileAvatarImg" src="https://via.placeholder.com/90" alt="Avatar">
                             </div>
                             <div>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Юзернейм</p>
-                                <h2 id="profUsername" style="font-size: 1.25rem; font-weight: 700;">username</h2>
+                                <h2 id="profUsername" style="font-size: 1.35rem; font-weight: 700;">username</h2>
                             </div>
                         </div>
-                        <button class="edit-circle-btn" onclick="toggleEditBox('editUserBox')" title="Изменить юзернейм">✏</button>
+                        <button class="edit-pencil-btn" onclick="toggleEditBox('editUserBox')" title="Изменить юзернейм">✏️</button>
                     </div>
 
                     <div id="editUserBox" class="inline-edit-box">
@@ -176,20 +184,30 @@
 
                 <div class="profile-field-row">
                     <div>
-                        <p style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Безопасность</p>
                         <span id="profPasswordDisplay" style="font-weight: 600; font-size: 0.95rem;">Пароль: ******</span>
                     </div>
-                    <button class="edit-circle-btn" onclick="toggleEditBox('editPassBox')" title="Изменить пароль">✏</button>
+                    <button class="edit-pencil-btn" onclick="toggleEditBox('editPassBox')" title="Изменить пароль">✏️</button>
                 </div>
 
                 <div id="editPassBox" class="inline-edit-box">
                     <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label">Текущий пароль</label>
+                        <input type="password" id="currentPassInput" class="form-input" placeholder="Введите текущий пароль">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
                         <label class="form-label">Новый пароль</label>
                         <input type="password" id="newPassInput" class="form-input" placeholder="Введите новый пароль">
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
+                    <div class="form-group" style="margin-bottom: 0.5rem;">
+                        <label class="form-label">Подтверждение нового пароля</label>
+                        <input type="password" id="confirmNewPassInput" class="form-input" placeholder="Повторите новый пароль">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
                         <button class="modal-btn" style="margin-top:0;" onclick="saveNewPassword()">Сохранить</button>
                         <button class="modal-btn" style="margin-top:0; background:var(--text-muted);" onclick="toggleEditBox('editPassBox')">Отмена</button>
+                    </div>
+                    <div style="margin-top: 0.75rem; font-size: 0.85rem;">
+                        <a href="https://sllven.github.io/SteppeTech/cc" style="color: var(--primary); text-decoration: none; font-weight: 600;" id="forgotPasswordLink">Забыли пароль?</a>
                     </div>
                 </div>
 
@@ -234,27 +252,40 @@
                 </div>
             </div>
 
+            <!-- БЛОК С КАРТОЧКАМИ (СВАПАЙКА) -->
             <div class="features-section">
                 <h2 id="featuresMainTitle">Почему абитуриенты выбирают нас?</h2>
-                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem;" id="featuresMainSub">Сделайте осознанный выбор будущего университета без долгих поисков.</p>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;" id="featuresMainSub">Листайте карточки, чтобы узнать все преимущества сервиса.</p>
                 
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <h3 id="feat1Title">Нейросетевая точность</h3>
-                        <p id="feat1Desc">Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.</p>
+                <div class="slider-container">
+                    <button class="slider-btn prev" onclick="scrollSlider(-1)">&#10094;</button>
+                    <div id="featuresSlider" class="features-slider">
+                        <div class="feature-card">
+                            <div>
+                                <h3 id="feat1Title">Нейросетевая точность</h3>
+                                <p id="feat1Desc">Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card">
+                            <div>
+                                <h3 id="feat2Title">Твой карьерный компас</h3>
+                                <p id="feat2Desc">Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card">
+                            <div>
+                                <h3 id="feat3Title">Без воды и рекламы</h3>
+                                <p id="feat3Desc">Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.</p>
+                            </div>
+                        </div>
+                        <div class="feature-card">
+                            <div>
+                                <h3 id="feat4Title">Умный профиль</h3>
+                                <p id="feat4Desc">Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-item">
-                        <h3 id="feat2Title">Твой карьерный компас</h3>
-                        <p id="feat2Desc">Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3 id="feat3Title">Без воды и рекламы</h3>
-                        <p id="feat3Desc">Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3 id="feat4Title">Умный профиль</h3>
-                        <p id="feat4Desc">Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке.</p>
-                    </div>
+                    <button class="slider-btn next" onclick="scrollSlider(1)">&#10095;</button>
                 </div>
             </div>
         </div>
@@ -318,8 +349,7 @@
         <div class="footer-copy">© 2026 UniView AI. Все права защищены.</div>
     </footer>
 
-       <script>
-        // Бэкенд работает на том же хосте, поэтому запросы идут на /api/...
+    <script>
         let currentLang = 'ru';
 
         function changeLanguage(lang, btn) {
@@ -362,6 +392,85 @@
             document.getElementById('feat3Desc').innerText = t.feat3Desc;
             document.getElementById('feat4Title').innerText = t.feat4Title;
             document.getElementById('feat4Desc').innerText = t.feat4Desc;
+            document.getElementById('forgotPasswordLink').innerText = t.forgotPass;
+        }
+
+        const translations = {
+            ru: {
+                title: "UniView AI — Сервис поиска университетов",
+                mainTitle: "Поиск университетов через AI",
+                mainSubtitle: "Введите название вуза, чтобы получить мгновенную аналитику для поступления.",
+                searchBtn: "Найти",
+                loadingText: "Нейросеть собирает данные... Пожалуйста, подождите.",
+                placeholder: "Название университета...",
+                menuProfile: "Профиль", menuHome: "Главная", menuAbout: "Подробнее о нас", menuContacts: "Контакты", menuFaq: "FAQ",
+                fAbout: "Подробнее о нас", fPp: "Политика Конфиденциальности", fT: "Условия Пользования", fFaq: "FAQ", fCc: "Контакты",
+                historyTitle: "История поиска университетов", historySub: "Нажмите на университет из списка, чтобы мгновенно запросить актуальную информацию:",
+                backBtn: "Вернуться к поиску",
+                featuresMainTitle: "Почему абитуриенты выбирают нас?",
+                featuresMainSub: "Листайте карточки, чтобы узнать все преимущества сервиса.",
+                feat1Title: "Нейросетевая точность",
+                feat1Desc: "Забудьте о долгом гуглинге. ИИ мгновенно собирает актуальные данные из десятков источников, выдавая вам только факты.",
+                feat2Title: "Твой карьерный компас",
+                feat2Desc: "Мы показываем не только проходные баллы, но и перспективы: гранты, сильные факультеты и возможности трудоустройства.",
+                feat3Title: "Без воды и рекламы",
+                feat3Desc: "Никаких рекламных баннеров вузов. Только честная, структурированная и прозрачная аналитика для принятия решения.",
+                feat4Title: "Умный профиль",
+                feat4Desc: "Сравнивайте университеты, сохраняйте историю поиска и возвращайтесь к изучению в любое время на удобном вам языке.",
+                forgotPass: "Забыли пароль?"
+            },
+            kz: {
+                title: "UniView AI — Университеттерді іздеу қызметі",
+                mainTitle: "AI арқылы университеттерді іздеу",
+                mainSubtitle: "Оқуға түсу үшін лезде аналитика алу мақсатында ЖОО атауын енгізіңіз.",
+                searchBtn: "Іздеу",
+                loadingText: "Нейрожелі деректерді жинауда... Күте тұрыңыз.",
+                placeholder: "Университет атауы...",
+                menuProfile: "Профиль", menuHome: "Басты бет", menuAbout: "Біз туралы", menuContacts: "Байланыс", menuFaq: "FAQ",
+                fAbout: "Біз туралы", fPp: "Құпиялылық саясаты", fT: "Пайдалану шарттары", fFaq: "FAQ", fCc: "Байланыс",
+                historyTitle: "Университеттерді іздеу тарихы", historySub: "Тізімнен университет атауын басып, ақпаратты қайта сұраңыз:",
+                backBtn: "Іздеуге оралу",
+                featuresMainTitle: "Талапкерлер неге бізді таңдайды?",
+                featuresMainSub: "Қызметтің барлық артықшылықтарын білу үшін карточкаларды парақтаңыз.",
+                feat1Title: "Нейрожелілік дәлдік",
+                feat1Desc: "Ұзақ іздеуді ұмытыңыз. ЖИ ондаған дереккөздерден тек нақты фактілерді жинап береді.",
+                feat2Title: "Сенің мансаптық компасың",
+                feat2Desc: "Біз тек шекті балдарды ғана емес, гранттарды, мықты факультеттерді және жұмысқа орналасу мүмкіндіктерін көрсетеміз.",
+                feat3Title: "Жарнамасыз, тек фактілер",
+                feat3Desc: "ЖОО-лардың жарнамалық баннерлері жоқ. Тек шешім қабылдауға арналған адал әрі құрылымдық аналитика.",
+                feat4Title: "Ақылды профиль",
+                feat4Desc: "Университеттерді салыстырыңыз, іздеу тарихын сақтаңыз және өзіңізге ыңғайлы тілде кез келген уақытта қайта оралыңыз.",
+                forgotPass: "Құпия сөзді ұмытыңыз ба?"
+            },
+            en: {
+                title: "UniView AI — University Search Service",
+                mainTitle: "University Search via AI",
+                mainSubtitle: "Enter the university name to get instant analytics for your admission.",
+                searchBtn: "Search",
+                loadingText: "Neural network is gathering data... Please wait.",
+                placeholder: "University name...",
+                menuProfile: "Profile", menuHome: "Home", menuAbout: "About Us", menuContacts: "Contacts", menuFaq: "FAQ",
+                fAbout: "About Us", fPp: "Privacy Policy", fT: "Terms of Use", fFaq: "FAQ", fCc: "Contacts",
+                historyTitle: "University Search History", historySub: "Click on a university from the list to instantly query live info:",
+                backBtn: "Back to Search",
+                featuresMainTitle: "Why do applicants choose us?",
+                featuresMainSub: "Swipe through the cards to explore all the platform's features.",
+                feat1Title: "Neural Network Accuracy",
+                feat1Desc: "Forget endless googling. AI instantly gathers data from dozens of sources, giving you only the facts.",
+                feat2Title: "Your Career Compass",
+                feat2Desc: "We show more than passing scores: grants, top faculties, and future employment prospects.",
+                feat3Title: "No Fluff, No Ads",
+                feat3Desc: "No promotional university banners. Only honest, structured, and transparent analytics for your decision.",
+                feat4Title: "Smart Profile",
+                feat4Desc: "Compare universities, save your search history, and return to your research anytime in your preferred language.",
+                forgotPass: "Forgot password?"
+            }
+        };
+
+        function scrollSlider(direction) {
+            const slider = document.getElementById('featuresSlider');
+            const scrollAmount = 300;
+            slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
         function toggleMenu() {
@@ -433,18 +542,35 @@
         }
 
         async function saveNewPassword() {
+            const currentPass = document.getElementById('currentPassInput').value;
             const newPass = document.getElementById('newPassInput').value;
-            if (!newPass) { showSiteAlert('profileAlert', 'Введите новый пароль', true); return; }
+            const confirmPass = document.getElementById('confirmNewPassInput').value;
+
+            if (!currentPass || !newPass || !confirmPass) {
+                showSiteAlert('profileAlert', 'Заполните все поля пароля', true);
+                return;
+            }
+            if (newPass !== confirmPass) {
+                showSiteAlert('profileAlert', 'Новые пароли не совпадают', true);
+                return;
+            }
             
             try {
                 const res = await fetch('/api/update-profile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ currentUsername: currentUser.username, newPassword: newPass, currentPassword: '' }) // упрощенно
+                    body: JSON.stringify({ 
+                        currentUsername: currentUser.username, 
+                        currentPassword: currentPass, 
+                        newPassword: newPass 
+                    })
                 });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.error);
 
+                document.getElementById('currentPassInput').value = '';
+                document.getElementById('newPassInput').value = '';
+                document.getElementById('confirmNewPassInput').value = '';
                 toggleEditBox('editPassBox');
                 showSiteAlert('profileAlert', 'Пароль успешно изменен!');
             } catch (e) {
@@ -535,7 +661,6 @@
             }
         }
 
-        // ЗАПРОС К СЕРВЕРУ (ИИ ИСТОЧНИК НА БЭКЕНДЕ)
         async function handleSearch(mode) {
             const input = document.getElementById('uniInput');
             const loading = document.getElementById('loading');
