@@ -66,7 +66,7 @@
         .spinner { width: 18px; height: 18px; border: 2px solid rgba(17, 24, 39, 0.2); border-top-color: var(--text-main); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ГОРИЗОНТАЛЬНЫЙ СЛАЙДЕР С ДЛИННЫМИ ВЕРТИКАЛЬНЫМИ КАРТОЧКАМИ БЕЗ ЭМОДЗИ */
+        /* ИСХОДНЫЙ СЛАЙДЕР, НО С ВЫТЯНУТЫМИ ВНИЗ КАРТОЧКАМИ БЕЗ ЭМОДЗИ */
         .features-section { margin-top: 3rem; }
         .features-section h2 { font-size: 1.5rem; margin-bottom: 0.4rem; color: var(--text-main); font-weight: 700; letter-spacing: -0.02em; }
         
@@ -85,12 +85,12 @@
         .features-slider::-webkit-scrollbar { display: none; }
         
         .feature-card { 
-            flex: 0 0 320px; /* фиксированная ширина карточки */
-            min-height: 280px; /* вытянутая высота вниз */
+            flex: 0 0 300px; 
+            min-height: 290px; /* Вытянуты вниз */
             scroll-snap-align: start; 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
-            padding: 2.25rem 2rem; 
+            padding: 2.25rem 1.75rem; 
             border-radius: var(--radius); 
             box-shadow: 0 4px 20px rgba(0,0,0,0.01);
             display: flex;
@@ -102,8 +102,8 @@
             border-color: #cbd5e1;
             box-shadow: 0 8px 30px rgba(0,0,0,0.03);
         }
-        .feature-card h3 { font-size: 1.15rem; color: var(--text-main); margin-bottom: 0.85rem; font-weight: 600; letter-spacing: -0.01em; }
-        .feature-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
+        .feature-card h3 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.75rem; font-weight: 600; letter-spacing: -0.01em; }
+        .feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
         
         .slider-btn { background: var(--card-bg); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.05); color: var(--text-main); transition: all 0.2s; }
         .slider-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
@@ -282,7 +282,7 @@
                 </div>
             </div>
 
-            <!-- ГОРИЗОНТАЛЬНЫЙ СЛАЙДЕР С ВЫТЯНУТЫМИ КАРТОЧКАМИ БЕЗ ЭМОДЗИ -->
+            <!-- КАРТОЧКИ В СЛАЙДЕРЕ (ЛИСТАЮТСЯ ВБОК, ВЫТЯНУТЫ ВНИЗ, БЕЗ ЭМОДЗИ) -->
             <div class="features-section">
                 <h2 id="featuresMainTitle">Преимущества платформы</h2>
                 <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;" id="featuresMainSub">Ключевые принципы работы нашего аналитического модуля.</p>
@@ -496,7 +496,7 @@
 
         function scrollSlider(direction) {
             const slider = document.getElementById('featuresSlider');
-            const scrollAmount = 340;
+            const scrollAmount = 320;
             slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
